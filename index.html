@@ -5,15 +5,23 @@
     .wrapper {
         display: flex;
         flex-direction: column;
+        height: 100vh;
         align-items: center;
+        justify-content: space-between;
     }
 </style>
 
-<body class="sans-serif pa2 bg-navy">
+<body class="sans-serif pa2 bg-navy" style="height: 100%;">
 
     <div class="wrapper">
-        <h1 class="lightest-blue">LED Board Simulator</h1>
-        <div id="board"></div>
+        <div>
+            <h1 class="lightest-blue">LED Board Simulator</h1>
+            <div id="board"></div>
+        </div>
+
+        <audio id="musicPlayer" autoplay loop>
+            <source src="parallaxing_atmosphere.mp3" type="audio/mpeg">
+        </audio>
     </div>
 
     <script>
@@ -24,6 +32,8 @@
         let shipRow = "";
         let shipColor = "";
         const ledColor = "bg-dark-blue";
+
+        document.getElementById("musicPlayer").volume = 0.5;
 
         // keyboard controls
         document.onkeydown = function(e) {
