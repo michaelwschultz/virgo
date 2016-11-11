@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
+<style>
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+</style>
+
+<body class="sans-serif pa2 bg-navy">
+
+    <div class="wrapper">
+        <h1 class="lightest-blue">LED Board Simulator</h1>
+        <div id="board"></div>
+    </div>
+
+    <script>
+
+        //** Variables and setup **//
+        // generate an alphabet
+        let alphabet = "abcdefghijklmnopqrstuvwxyz".split('');
+        let shipRow = "";
+        let shipColor = "";
+        const ledColor = "bg-dark-blue";
+
+        // keyboard controls
+        document.onkeydown = function(e) {
+            switch (e.keyCode) {
+                case 32:
+                    bullet(shipRow, "bg-red", 30);
+                    break;
+                case 38: // up
+                    moveShipUp();
+                    break;
+                case 87: // w
+                    moveShipUp();
+                    break;
+                case 40: // down
+                    moveShipDown();
+                    break;
+                case 83: // s
+                    moveShipDown();
+                    break;
+            }
+        };
+
+
+
+
+        //** LED Board **//
+
+        // Build 16 rows with 32 divs
+        function getBoard() {
+            for (r = 0; r < 16; r++) {
+                let currentRow = 'row-' + alphabet[r];
+                document.getElementById("board").innerHTML += "<div id='row-" + alphabet[r] + "'></div>";
+
+                for (c = 0; c < 32; c++) {
+                    document.getElementById(currentRow).innerHTML += "<div id='" + alphabet[r] + c + "' class='dib pa1 ma1 br-100 " + ledColor + "'></div>";
+                }
+            }
+        }
+
+        // Turn on a single light
+        function turnOn(row, column, color) {
+            document.getElementById(alphabet[row] + column).classList.add(color);
+            document.getElementById(alphabet[row] + column).classList.remove(ledColor);
+        }
+
+        // Turn off a single light
+        function turnOff(row, column, color) {
+            document.getElementById(alphabet[row] + column).classList.add(ledColor);
+            document.getElementById(alphabet[row] + column).classList.remove(color);
+        }
+
+
+        // Turn on all the lights
+        function lightsOn(color) {
+            console.log("lights on");
+
+            for (r = 0; r < 16; r++) {
+                for (c = 0; c < 32; c++) {document.getElementById(alphabet[r] + c).classList.add(color);
+                    document.getElementById(alphabet[r] + c).classList.remove(ledColor);
+                }
+            }
+        };
+
+        // Turn all the lights off
+        function lightsOff() {
+            console.log("lights off");
+
+            for (r = 0; r < 16; r++) {
+                for (c = 0; c < 32; c++) {
+                    document.getElementById(alphabet[r] + c).classList.add(ledColor);
+                    document.getElementById(alphabet[r] + c).classList.remove(color);
+                }
+            }
+        }
+
+        // Turn a light on then back off
+        function blink(led, color, duration, delay) {
+            setTimeout(function() {
+                document.getElementById(led).classList.add(color);
+                document.getElementById(led).classList.remove(ledColor);
+
+                setTimeout(function() {
+                    document.getElementById(led).classList.add(ledColor);
+                    document.getElementById(led).classList.remove(color);
+                }, duration);
+            }, delay);
+        }
+
+        // Bullet shot light effect
+        function bullet(row, color, speed) {
+            console.log("shot fired");
+
+            let shotDelay = speed * 1.03;
+
+            for (i = 1; i < 32; i++) {
+                setTimeout(function(led) {
+                    return function() {
+                        // console.log(alphabet[row] + led + "added");
+                        document.getElementById(alphabet[row] + led).classList.add(color);
+                        document.getElementById(alphabet[row] + led).classList.remove(ledColor);
+                    };
+                }(i), speed*i);
+
+                setTimeout(function(led) {
+                    return function() {
+                        // console.log(alphabet[row] + led + "removed");
+                        document.getElementById(alphabet[row] + led).classList.add(ledColor);
+                        document.getElementById(alphabet[row] + led).classList.remove(color);
+                    };
+                }(i), shotDelay * i);
+            }
+        }
+
+
+
+
+        //** Ship creation and movement **//
+
+        function placeShip(row, color) {
+            console.log("Ship hovering at row " + alphabet[row])
+            shipRow = row;
+            shipColor = color;
+
+            turnOn(shipRow, 0, shipColor);
+        }
+
+        function moveShipUp() {
+             console.log("up pressed: row " + alphabet[shipRow]);
+            if (shipRow > 0) {
+                turnOff(shipRow, 0, shipColor);
+                    shipRow = shipRow - 1;
+                turnOn(shipRow, 0, shipColor);
+            }
+        }
+
+        function moveShipDown() {
+             console.log("down pressed: row " + alphabet[shipRow]);
+            if (shipRow < 15) {
+                turnOff(shipRow, 0, shipColor);
+                    shipRow = shipRow + 1;
+                turnOn(shipRow, 0, shipColor);
+            }
+        }
+
+
+
+
+        //** Instructions **//
+
+        getBoard();
+        placeShip(8, "bg-yellow");
+
+
+
+
+        //** Test commands **//
+
+        // turnOn(4, 15, "bg-green");
+        // turnOff(4, 15);
+
+        // lightsOn("bg-yellow");
+        // setTimeout(function() { lightsOff() }, 3000);
+
+        // blink("i15", "bg-red", 500, 1000);
+        // blink("i16", "bg-yellow", 500, 1500);
+        // blink("i17", "bg-green", 500, 2000);
+
+
+
+
+    </script>
+
+</body>
