@@ -5,7 +5,7 @@
     .wrapper {
         display: flex;
         flex-direction: column;
-        height: 100vh;
+        /*height: 100vh;*/
         align-items: center;
         justify-content: space-between;
     }
@@ -19,9 +19,9 @@
             <div id="board"></div>
         </div>
 
-        <audio id="musicPlayer" autoplay loop>
+        <!-- <audio id="musicPlayer" autoplay loop>
             <source src="parallaxing_atmosphere.mp3" type="audio/mpeg">
-        </audio>
+        </audio> -->
     </div>
 
     <script>
@@ -31,9 +31,12 @@
         let alphabet = "abcdefghijklmnopqrstuvwxyz".split('');
         let shipRow = "";
         let shipColor = "";
+        let fps = 30;
+        let frame = 0;
+
         const ledColor = "bg-dark-blue";
 
-        document.getElementById("musicPlayer").volume = 0.5;
+        // document.getElementById("musicPlayer").volume = 0.5;
 
         // keyboard controls
         document.onkeydown = function(e) {
@@ -85,7 +88,6 @@
             document.getElementById(alphabet[row] + column).classList.remove(color);
         }
 
-
         // Turn on all the lights
         function lightsOn(color) {
             console.log("lights on");
@@ -126,7 +128,7 @@
         function bullet(row, color, speed) {
             console.log("shot fired");
 
-            let shotDelay = speed * 1.03;
+            let shotDelay = speed * 1.2;
 
             for (i = 1; i < 32; i++) {
                 setTimeout(function(led) {
@@ -179,12 +181,45 @@
         }
 
 
+        function draw() {
+            // console.log(frame);
+
+            // 1) Create an array of game objects, which define their position and color
+            // for loop through all objects...
+            // turn on leds accordingly.. if there is nothing in that space turn the led off
+
+            turnOn(4, 15, "bg-green");
+
+            // turn on light based on fps between 1 (every frame) and 30 (once every 30 frames or once a second)
+            if (frame % 1 === 0) {
+                turnOn(4, 15, "bg-green");
+            } else {
+                turnOff(4, 15, "bg-green");
+            }
+            frame++;
+        }
+
 
 
         //** Instructions **//
 
         getBoard();
         placeShip(8, "bg-yellow");
+
+
+        setInterval(draw, fps);
+
+        // do while: this need to happen 30fps
+        // while (true) {
+        //    setTimeout(function() {
+        //         draw(frame);
+        //         frame++;
+        //     }, 1000 / fps);
+        // }
+
+
+
+        
 
 
 
