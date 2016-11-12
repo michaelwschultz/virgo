@@ -33,36 +33,17 @@
         //** Variables and setup **//
         // generate an alphabet
         let alphabet = "abcdefghijklmnopqrstuvwxyz".split('');
-        let shipLocation = {row: null, column: null};
+        // let shipLocation = null;
+        let bulletLocation = null;
+        let bulletFired = false;
         let shipColor = "";
         let fps = 30;
         let frame = 0;
+        let grid = {height: 16, width: 32};
 
         const ledColor = "bg-dark-blue";
 
         // document.getElementById("musicPlayer").volume = 0.5;
-
-        // keyboard controls
-        document.onkeydown = function(e) {
-            switch (e.keyCode) {
-                case 32:
-                    bullet(shipLocation, "bg-red", 30);
-                    break;
-                case 38: // up
-                    moveShipUp();
-                    break;
-                case 87: // w
-                    moveShipUp();
-                    break;
-                case 40: // down
-                    moveShipDown();
-                    break;
-                case 83: // s
-                    moveShipDown();
-                    break;
-            }
-        };
-
 
 
 
@@ -70,13 +51,19 @@
 
         // Build 16 rows with 32 divs
         function getBoard(boardName, ledName, defaultColor = "") {
-            for (r = 0; r < 16; r++) { 
+
+            let hidden = "";
+
+            if (ledName == "light") {
+                hidden = "hidden";
+            }
+
+            for (r = 0; r < grid.height; r++) { 
                 let currentRow = 'row-' + alphabet[r];
                 document.getElementById(boardName).innerHTML += "<div id='row-" + alphabet[r] + "'></div>";
-                
-
-                for (c = 0; c < 32; c++) {
-                    document.getElementById(currentRow).innerHTML += "<div id='" + alphabet[r] + c + "-" + ledName + "' class='dib pa1 ma1 br-100 " + defaultColor + "'></div>";
+        
+                for (c = 0; c < grid.width; c++) {
+                    document.getElementById(currentRow).innerHTML += "<div id='" + alphabet[r] + c + "-" + ledName + "' class='dib pa1 ma1 br-100 " + hidden + " " + defaultColor + "'></div>";
                 }
             }
         }
@@ -91,6 +78,191 @@
         function turnOff(location) {
             document.getElementById(location.row + location.column + "-light").classList.add("hidden");
         }
+
+        
+
+
+        // Bullet shot light effect
+        function bullet(shipLocation, color, speed) {
+            console.log("shot fired");
+
+            let bulletFiredLocation = shipLocation.column;
+
+            for (i = bulletFiredLocation; i < grid.width; i++) {
+                bulletFired = true;
+
+                setTimeout(function(led) {
+                    bulletLocation = new Location(shipLocation.row, led);
+
+                    if (bulletLocation.column == grid.width - 1) {
+                        setTimeout(function() {
+                            bulletFired = false;
+                        }, speed);
+                    }
+                }.bind(null, i), i * speed);
+            }    
+        }
+
+
+
+
+        //** Ship creation and movement **//
+
+        function moveShipDown() {
+            let shipRow = alphabet.indexOf(shipLocation.row);
+
+            if (shipRow < 15) {
+                shipRow = shipRow + 1;
+                shipLocation.row = alphabet[shipRow];
+            }
+        }
+
+
+        /** Classes **/
+
+        // Make a ship class that has a constructor that takes arguments of initialLocation
+
+        class Location {
+            constructor(row, column) {
+                this.row = row;
+                this.column = column;
+            }
+        }
+
+        class Ship {
+            constructor(location, color) {
+                this.location = location;
+                this.color = color;
+            }
+
+            moveUp() {
+                let shipRow = alphabet.indexOf(this.location.row);
+
+                if (shipRow > 0) {
+                    shipRow = shipRow - 1;
+                    this.location.row = alphabet[shipRow];
+                }
+            }
+
+            moveDown() {
+                let shipRow = alphabet.indexOf(this.location.row);
+
+                if (shipRow < 15) {
+                    shipRow = shipRow + 1;
+                    this.location.row = alphabet[shipRow];
+                }
+            }
+
+            moveLeft() {
+                let shipColumn = this.location.column;
+
+                if (shipColumn > 0) {
+                    shipColumn = shipColumn - 1;
+                    this.location.column = shipColumn;
+                }
+            }
+
+            moveRight() {
+                let shipColumn = this.location.column;
+
+                if (shipColumn < 31) {
+                    shipColumn = shipColumn + 1;
+                    this.location.column = shipColumn;
+                }
+            }
+        }
+
+        //** Instructions **//
+
+        getBoard("board", "slot", "bg-dark-blue");
+        getBoard("board-lights", "light");
+
+        let myShip = new Ship(new Location("i", 0), "bg-yellow");
+
+
+
+        // 1) Create an array of game objects, which define their position and color
+        // for loop through all objects...
+        // turn on leds accordingly.. if there is nothing in that space turn the led off
+
+        // turn on light based on fps between 1 (every frame) and 30 (once every 30 frames or once a second)
+        // if (frame % 2 === 0) {
+        //     turnOn(new Location("d", 15), "bg-yellow");
+        // } else {
+        //     turnOff(new Location("d", 15));
+        // }
+        // frame++;
+
+        function render(myShip) {
+
+            // cleanup all unused lights
+            for (r = 0; r < grid.height; r++) { 
+                for (c = 0; c < grid.width; c++) {
+                    let led = (new Location(alphabet[r], c))
+                    turnOff(led);
+                }
+            }
+
+            turnOn(myShip.location, myShip.color);
+
+            turnOn(new Location("f", 8), "bg-white");
+
+            if (bulletFired) {
+                turnOn(bulletLocation, "bg-red");
+            }
+
+        }
+
+        setInterval(render.bind(null, myShip), 1000 / fps);
+
+        // keyboard controls
+        document.onkeydown = function(e) {
+            switch (e.keyCode) {
+                case 32:
+                    bullet(myShip.location, "bg-red", 30);
+                    break;
+                case 38: // up
+                    myShip.moveUp();
+                    break;
+                case 87: // w
+                    myShip.moveUp();
+                    break;
+                case 40: // down
+                    myShip.moveDown();
+                    break;
+                case 83: // s
+                    myShip.moveDown();
+                    break;
+                case 37: // left
+                    myShip.moveLeft();
+                    break;
+                case 39: // right
+                    myShip.moveRight();
+                    break;
+            }
+        };
+
+
+        //**  Test FPS **//
+
+        // setTimeout(function() {
+        //     clearInterval(go);
+        // }, 1000);
+
+
+
+        //** Test commands **//
+
+        /*
+        turnOn(new Location("b", 24), "bg-red");
+
+        lightsOn("bg-yellow");
+        setTimeout(function() { lightsOff() }, 3000);
+
+        blink("i15", "bg-red", 500, 1000);
+        blink("i16", "bg-yellow", 500, 1500);
+        blink("i17", "bg-green", 500, 2000);
+        
 
         // Turn on all the lights
         function lightsOn(color) {
@@ -128,133 +300,7 @@
                 }, duration);
             }, delay);
         }
-
-        // Bullet shot light effect
-        function bullet(shipLocation, color, speed) {
-            console.log("shot fired");
-
-            let shotDelay = speed * 1.04;
-
-            for (i = 1; i < 32; i++) {
-                setTimeout(function(led) {
-                    let bulletLocation = new Location(shipLocation.row, led);
-                    
-                    return function() {
-                        turnOn(bulletLocation, color);
-                    };
-                }(i), speed*i);
-
-                setTimeout(function(led) {
-                    let removeBulletLocation = new Location(shipLocation.row, led);
-
-                    return function() {
-                        turnOff(removeBulletLocation);
-                    };
-                }(i), shotDelay * i);
-            }
-        }
-
-
-
-
-        //** Ship creation and movement **//
-
-        function placeShip(location, color) {
-            console.log("Ship hovering at row " + location);
-            shipLocation = location;
-            shipColor = color;
-
-            turnOn(location, shipColor);
-        }
-
-        function moveShipUp() {
-            let shipRow = alphabet.indexOf(shipLocation.row);
-
-            if (shipRow > 0) {
-                turnOff(shipLocation);
-                    shipRow = shipRow - 1;
-                    shipLocation.row = alphabet[shipRow];
-                turnOn(shipLocation, shipColor);
-            }
-        }
-
-        function moveShipDown() {
-            let shipRow = alphabet.indexOf(shipLocation.row);
-
-            if (shipRow < 15) {
-                turnOff(shipLocation);
-                    shipRow = shipRow + 1;
-                    shipLocation.row = alphabet[shipRow];
-                turnOn(shipLocation, shipColor);
-            }
-        }
-
-
-        function render() {
-            // console.log(frame);
-
-            // 1) Create an array of game objects, which define their position and color
-            // for loop through all objects...
-            // turn on leds accordingly.. if there is nothing in that space turn the led off
-
-            turnOn(new Location("b", 24), "bg-red");
-
-            // turn on light based on fps between 1 (every frame) and 30 (once every 30 frames or once a second)
-            if (frame % 1 === 0) {
-                turnOn(new Location("d", 15), "bg-yellow");
-            } else {
-                turnOff(new Location("d", 15));
-            }
-            frame++;
-        }
-
-
-
-        //** Instructions **//
-
-        getBoard("board", "slot", "bg-dark-blue");
-        getBoard("board-lights", "light");
-
-
-        // turnOn("a15", "bg-green");
-
-
-        class Location {
-            constructor(row, column) {
-                this.row = row;
-                this.column = column;
-            }
-        };
-
-        placeShip(new Location("i", 0), "bg-yellow");
-
-
-        // setInterval(render, fps);
-
-
-
-        // do while: this need to happen 30fps
-        // while (true) {
-        //    setTimeout(function() {
-        //         draw(frame);
-        //         frame++;
-        //     }, 1000 / fps);
-        // }
-
-
-        //** Test commands **//
-
-        // turnOn(new Location("b", 24), "bg-red");
-
-        // turnOn(4, 15, "bg-green");
-        // turnOff(4, 15);
-
-        // lightsOn("bg-yellow");
-        // setTimeout(function() { lightsOff() }, 3000);
-
-        // blink("i15", "bg-red", 500, 1000);
-        // blink("i16", "bg-yellow", 500, 1500);
-        // blink("i17", "bg-green", 500, 2000);
+        */
 
     </script>
 
