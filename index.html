@@ -9,6 +9,9 @@
         align-items: center;
         justify-content: space-between;
     }
+    .hidden {
+        visibility: hidden;
+    }
 </style>
 
 <body class="sans-serif pa2 bg-navy" style="height: 100%;">
@@ -16,6 +19,7 @@
     <div class="wrapper">
         <div>
             <h1 class="lightest-blue">LED Board Simulator</h1>
+            <div id="board-lights" class="absolute"></div>
             <div id="board"></div>
         </div>
 
@@ -29,7 +33,7 @@
         //** Variables and setup **//
         // generate an alphabet
         let alphabet = "abcdefghijklmnopqrstuvwxyz".split('');
-        let shipRow = "";
+        let shipLocation = {row: null, column: null};
         let shipColor = "";
         let fps = 30;
         let frame = 0;
@@ -42,7 +46,7 @@
         document.onkeydown = function(e) {
             switch (e.keyCode) {
                 case 32:
-                    bullet(shipRow, "bg-red", 30);
+                    bullet(shipLocation, "bg-red", 30);
                     break;
                 case 38: // up
                     moveShipUp();
@@ -65,27 +69,27 @@
         //** LED Board **//
 
         // Build 16 rows with 32 divs
-        function getBoard() {
-            for (r = 0; r < 16; r++) {
+        function getBoard(boardName, ledName, defaultColor = "") {
+            for (r = 0; r < 16; r++) { 
                 let currentRow = 'row-' + alphabet[r];
-                document.getElementById("board").innerHTML += "<div id='row-" + alphabet[r] + "'></div>";
+                document.getElementById(boardName).innerHTML += "<div id='row-" + alphabet[r] + "'></div>";
+                
 
                 for (c = 0; c < 32; c++) {
-                    document.getElementById(currentRow).innerHTML += "<div id='" + alphabet[r] + c + "' class='dib pa1 ma1 br-100 " + ledColor + "'></div>";
+                    document.getElementById(currentRow).innerHTML += "<div id='" + alphabet[r] + c + "-" + ledName + "' class='dib pa1 ma1 br-100 " + defaultColor + "'></div>";
                 }
             }
         }
 
         // Turn on a single light
-        function turnOn(row, column, color) {
-            document.getElementById(alphabet[row] + column).classList.add(color);
-            document.getElementById(alphabet[row] + column).classList.remove(ledColor);
+        function turnOn(location, color) {
+            document.getElementById(location.row + location.column + "-light").classList.add(color);
+            document.getElementById(location.row + location.column + "-light").classList.remove("hidden");
         }
 
         // Turn off a single light
-        function turnOff(row, column, color) {
-            document.getElementById(alphabet[row] + column).classList.add(ledColor);
-            document.getElementById(alphabet[row] + column).classList.remove(color);
+        function turnOff(location) {
+            document.getElementById(location.row + location.column + "-light").classList.add("hidden");
         }
 
         // Turn on all the lights
@@ -114,6 +118,7 @@
         // Turn a light on then back off
         function blink(led, color, duration, delay) {
             setTimeout(function() {
+                turnOn(null, led, color);
                 document.getElementById(led).classList.add(color);
                 document.getElementById(led).classList.remove(ledColor);
 
@@ -125,25 +130,25 @@
         }
 
         // Bullet shot light effect
-        function bullet(row, color, speed) {
+        function bullet(shipLocation, color, speed) {
             console.log("shot fired");
 
-            let shotDelay = speed * 1.2;
+            let shotDelay = speed * 1.04;
 
             for (i = 1; i < 32; i++) {
                 setTimeout(function(led) {
+                    let bulletLocation = new Location(shipLocation.row, led);
+                    
                     return function() {
-                        // console.log(alphabet[row] + led + "added");
-                        document.getElementById(alphabet[row] + led).classList.add(color);
-                        document.getElementById(alphabet[row] + led).classList.remove(ledColor);
+                        turnOn(bulletLocation, color);
                     };
                 }(i), speed*i);
 
                 setTimeout(function(led) {
+                    let removeBulletLocation = new Location(shipLocation.row, led);
+
                     return function() {
-                        // console.log(alphabet[row] + led + "removed");
-                        document.getElementById(alphabet[row] + led).classList.add(ledColor);
-                        document.getElementById(alphabet[row] + led).classList.remove(color);
+                        turnOff(removeBulletLocation);
                     };
                 }(i), shotDelay * i);
             }
@@ -154,47 +159,51 @@
 
         //** Ship creation and movement **//
 
-        function placeShip(row, color) {
-            console.log("Ship hovering at row " + alphabet[row])
-            shipRow = row;
+        function placeShip(location, color) {
+            console.log("Ship hovering at row " + location);
+            shipLocation = location;
             shipColor = color;
 
-            turnOn(shipRow, 0, shipColor);
+            turnOn(location, shipColor);
         }
 
         function moveShipUp() {
-             console.log("up pressed: row " + alphabet[shipRow]);
+            let shipRow = alphabet.indexOf(shipLocation.row);
+
             if (shipRow > 0) {
-                turnOff(shipRow, 0, shipColor);
+                turnOff(shipLocation);
                     shipRow = shipRow - 1;
-                turnOn(shipRow, 0, shipColor);
+                    shipLocation.row = alphabet[shipRow];
+                turnOn(shipLocation, shipColor);
             }
         }
 
         function moveShipDown() {
-             console.log("down pressed: row " + alphabet[shipRow]);
+            let shipRow = alphabet.indexOf(shipLocation.row);
+
             if (shipRow < 15) {
-                turnOff(shipRow, 0, shipColor);
+                turnOff(shipLocation);
                     shipRow = shipRow + 1;
-                turnOn(shipRow, 0, shipColor);
+                    shipLocation.row = alphabet[shipRow];
+                turnOn(shipLocation, shipColor);
             }
         }
 
 
-        function draw() {
+        function render() {
             // console.log(frame);
 
             // 1) Create an array of game objects, which define their position and color
             // for loop through all objects...
             // turn on leds accordingly.. if there is nothing in that space turn the led off
 
-            turnOn(4, 15, "bg-green");
+            turnOn(new Location("b", 24), "bg-red");
 
             // turn on light based on fps between 1 (every frame) and 30 (once every 30 frames or once a second)
             if (frame % 1 === 0) {
-                turnOn(4, 15, "bg-green");
+                turnOn(new Location("d", 15), "bg-yellow");
             } else {
-                turnOff(4, 15, "bg-green");
+                turnOff(new Location("d", 15));
             }
             frame++;
         }
@@ -203,11 +212,26 @@
 
         //** Instructions **//
 
-        getBoard();
-        placeShip(8, "bg-yellow");
+        getBoard("board", "slot", "bg-dark-blue");
+        getBoard("board-lights", "light");
 
 
-        setInterval(draw, fps);
+        // turnOn("a15", "bg-green");
+
+
+        class Location {
+            constructor(row, column) {
+                this.row = row;
+                this.column = column;
+            }
+        };
+
+        placeShip(new Location("i", 0), "bg-yellow");
+
+
+        // setInterval(render, fps);
+
+
 
         // do while: this need to happen 30fps
         // while (true) {
@@ -218,13 +242,9 @@
         // }
 
 
-
-        
-
-
-
-
         //** Test commands **//
+
+        // turnOn(new Location("b", 24), "bg-red");
 
         // turnOn(4, 15, "bg-green");
         // turnOff(4, 15);
@@ -235,9 +255,6 @@
         // blink("i15", "bg-red", 500, 1000);
         // blink("i16", "bg-yellow", 500, 1500);
         // blink("i17", "bg-green", 500, 2000);
-
-
-
 
     </script>
 
