@@ -22,10 +22,6 @@
             <div id="board-lights" class="absolute"></div>
             <div id="board"></div>
         </div>
-
-        <!-- <audio id="musicPlayer" autoplay loop>
-            <source src="parallaxing_atmosphere.mp3" type="audio/mpeg">
-        </audio> -->
     </div>
 
     <script>
@@ -34,8 +30,10 @@
         // generate an alphabet
         let alphabet = "abcdefghijklmnopqrstuvwxyz".split('');
         // let shipLocation = null;
+        let bulletShotOrigin = null;
         let bulletLocation = null;
         let bulletFired = false;
+        let bulletCount = 0;
         let shipColor = "";
         let fps = 30;
         let frame = 0;
@@ -79,48 +77,144 @@
             document.getElementById(location.row + location.column + "-light").classList.add("hidden");
         }
 
-        
-
-
-        // Bullet shot light effect
-        function bullet(shipLocation, color, speed) {
-            console.log("shot fired");
-
-            let bulletFiredLocation = shipLocation.column;
-
-            for (i = bulletFiredLocation; i < grid.width; i++) {
-                bulletFired = true;
-
-                setTimeout(function(led) {
-                    bulletLocation = new Location(shipLocation.row, led);
-
-                    if (bulletLocation.column == grid.width - 1) {
-                        setTimeout(function() {
-                            bulletFired = false;
-                        }, speed);
-                    }
-                }.bind(null, i), i * speed);
-            }    
-        }
-
 
 
 
         //** Ship creation and movement **//
 
-        function moveShipDown() {
-            let shipRow = alphabet.indexOf(shipLocation.row);
+        // function moveShipDown() {
+        //     let shipRow = alphabet.indexOf(shipLocation.row);
 
-            if (shipRow < 15) {
-                shipRow = shipRow + 1;
-                shipLocation.row = alphabet[shipRow];
-            }
-        }
+        //     if (shipRow < 15) {
+        //         shipRow = shipRow + 1;
+        //         shipLocation.row = alphabet[shipRow];
+        //     }
+        // }
+
+
+
 
 
         /** Classes **/
 
         // Make a ship class that has a constructor that takes arguments of initialLocation
+
+
+        // Bullet shot light effect
+        // function bullet(shipLocation, color, speed) {
+        //     console.log("shot fired");
+
+
+        //     if (bulletShotOrigin == null) {
+        //         bulletShotOrigin = shipLocation;
+        //     }
+
+        //     for (i = bulletShotOrigin.column; i < grid.width; i++) {
+        //         bulletFired = true;
+
+        //         // console.log('origin' + bulletShotOrigin);
+
+        //         setTimeout(function(led) {
+        //             bulletLocation = new Location(bulletShotOrigin.row, led);
+        //             console.log(bulletShotOrigin.row);
+
+        //             if (bulletLocation.column === grid.width - 1) {
+        //                 // console.log(led);
+
+        //                 setTimeout(function() {
+        //                     bulletFired = false;
+        //                 }, speed);
+        //             }
+        //         }.bind(null, i), i * speed);
+        //     }    
+        // }
+
+
+
+
+        // class Bullet {
+        //     constructor(row, column, color, speed) {
+        //         this.row = row;
+        //         this.column = column;
+        //         this.color = color;
+        //         this.speed = speed;
+        //     }
+
+        //     getBullet() {
+        //         bulletCount++;
+        //         console.log('bullet' + bulletCount);
+
+        //         for (i = bulletShotOrigin.column; i < grid.width; i++) {
+        //             bulletFired = true;
+        //         }
+        //     }
+
+        //     getBulletLocation() {
+
+        //     }
+
+        //     moveBullet() {
+        //         bulletLocation = new Location(bulletShotOrigin.row, bulletLocation.column);
+        //         console.log(bulletShotOrigin.row);
+
+        //         if (bulletLocation.column === grid.width - 1) {
+        //             // console.log(led);
+
+        //             setTimeout(function() {
+        //                 bulletFired = false;
+        //             }, this.speed);
+        //         }
+        //     }
+
+        // }
+
+        class Bullet {
+            constructor(location, color, speed) {
+              this.location = location;
+              this.color = color;
+              this.speed = speed;
+            }
+
+            fire() {
+                // console.log('bullet ' + bulletCount);
+
+
+                // This is all jacked up! The grid and the start location
+                // arent lining up.
+                let bulletStartLocation = this.location;
+                let bulletLocation = this.location;
+                bulletLocation.column = bulletLocation.column + 12;
+
+                console.log(bulletStartLocation.column); 
+                console.log(bulletLocation.column);
+
+                turnOn(bulletLocation, this.color);
+
+                this.moveBullet(bulletLocation, bulletStartLocation);
+            }
+
+            moveBullet(bulletLocation, bulletStartLocation) {
+                console.log(bulletStartLocation.column);
+
+                if (bulletStartLocation.column <= grid.width - 1) {
+                    let move = setInterval(function() {
+                        bulletLocation.column++;
+
+                        if (bulletLocation.column >= grid.width - 1) {
+                            // console.log(bulletLocation.column + grid.width);
+                            // this.removeBullet();
+                            console.log(bulletLocation.column);
+                            clearInterval(move);
+                        }
+                    }, this.speed);
+                }
+            }
+
+            removeBullet() {
+
+            }
+        }
+
 
         class Location {
             constructor(row, column) {
@@ -128,6 +222,7 @@
                 this.column = column;
             }
         }
+
 
         class Ship {
             constructor(location, color) {
@@ -205,11 +300,11 @@
 
             turnOn(myShip.location, myShip.color);
 
-            turnOn(new Location("f", 8), "bg-white");
+            turnOn(new Location("i", 16), "bg-pink");
 
-            if (bulletFired) {
-                turnOn(bulletLocation, "bg-red");
-            }
+            turnOn(new Location("g", 25), "bg-red");
+
+            turnOn(new Location("b", 7), "bg-green");
 
         }
 
@@ -218,8 +313,9 @@
         // keyboard controls
         document.onkeydown = function(e) {
             switch (e.keyCode) {
-                case 32:
-                    bullet(myShip.location, "bg-red", 30);
+                case 32: // spacebar
+                    // bullet(myShip.location, "bg-red", 30);
+                    new Bullet(myShip.location, "bg-green", 30).fire();
                     break;
                 case 38: // up
                     myShip.moveUp();
