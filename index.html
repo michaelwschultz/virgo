@@ -5,7 +5,6 @@
     .wrapper {
         display: flex;
         flex-direction: column;
-        /*height: 100vh;*/
         align-items: center;
         justify-content: space-between;
     }
@@ -24,12 +23,16 @@
         </div>
     </div>
 
-    <script>
 
+    <!-- Imports -->
+    <script src="simulator.js"></script>
+    <script src="classes.js"></script>
+    <script src="shapes.js"></script>
+
+    <script>
         //** Variables and setup **//
         // generate an alphabet
         let alphabet = "abcdefghijklmnopqrstuvwxyz".split('');
-        // let shipLocation = null;
         let bulletShotOrigin = null;
         let bulletLocation = null;
         let bulletFired = false;
@@ -41,254 +44,13 @@
 
         const ledColor = "bg-dark-blue";
 
-        // document.getElementById("musicPlayer").volume = 0.5;
-
-
-
-        //** LED Board **//
-
-        // Build 16 rows with 32 divs
-        function getBoard(boardName, ledName, defaultColor = "") {
-
-            let hidden = "";
-
-            if (ledName == "light") {
-                hidden = "hidden";
-            }
-
-            for (r = 0; r < grid.height; r++) { 
-                let currentRow = 'row-' + alphabet[r];
-                document.getElementById(boardName).innerHTML += "<div id='row-" + alphabet[r] + "'></div>";
-        
-                for (c = 0; c < grid.width; c++) {
-                    document.getElementById(currentRow).innerHTML += "<div id='" + alphabet[r] + c + "-" + ledName + "' class='dib pa1 ma1 br-100 " + hidden + " " + defaultColor + "'></div>";
-                }
-            }
-        }
-
-        // Turn on a single light
-        function turnOn(location, color) {
-            document.getElementById(location.row + location.column + "-light").classList.add(color);
-            document.getElementById(location.row + location.column + "-light").classList.remove("hidden");
-        }
-
-        // Turn off a single light
-        function turnOff(location) {
-            document.getElementById(location.row + location.column + "-light").classList.add("hidden");
-        }
-
-
-
-
-        //** Ship creation and movement **//
-
-        // function moveShipDown() {
-        //     let shipRow = alphabet.indexOf(shipLocation.row);
-
-        //     if (shipRow < 15) {
-        //         shipRow = shipRow + 1;
-        //         shipLocation.row = alphabet[shipRow];
-        //     }
-        // }
-
-
-
-
-
-        /** Classes **/
-
-        // Make a ship class that has a constructor that takes arguments of initialLocation
-
-
-        // Bullet shot light effect
-        // function bullet(shipLocation, color, speed) {
-        //     console.log("shot fired");
-
-
-        //     if (bulletShotOrigin == null) {
-        //         bulletShotOrigin = shipLocation;
-        //     }
-
-        //     for (i = bulletShotOrigin.column; i < grid.width; i++) {
-        //         bulletFired = true;
-
-        //         // console.log('origin' + bulletShotOrigin);
-
-        //         setTimeout(function(led) {
-        //             bulletLocation = new Location(bulletShotOrigin.row, led);
-        //             console.log(bulletShotOrigin.row);
-
-        //             if (bulletLocation.column === grid.width - 1) {
-        //                 // console.log(led);
-
-        //                 setTimeout(function() {
-        //                     bulletFired = false;
-        //                 }, speed);
-        //             }
-        //         }.bind(null, i), i * speed);
-        //     }    
-        // }
-
-
-
-
-        // class Bullet {
-        //     constructor(row, column, color, speed) {
-        //         this.row = row;
-        //         this.column = column;
-        //         this.color = color;
-        //         this.speed = speed;
-        //     }
-
-        //     getBullet() {
-        //         bulletCount++;
-        //         console.log('bullet' + bulletCount);
-
-        //         for (i = bulletShotOrigin.column; i < grid.width; i++) {
-        //             bulletFired = true;
-        //         }
-        //     }
-
-        //     getBulletLocation() {
-
-        //     }
-
-        //     moveBullet() {
-        //         bulletLocation = new Location(bulletShotOrigin.row, bulletLocation.column);
-        //         console.log(bulletShotOrigin.row);
-
-        //         if (bulletLocation.column === grid.width - 1) {
-        //             // console.log(led);
-
-        //             setTimeout(function() {
-        //                 bulletFired = false;
-        //             }, this.speed);
-        //         }
-        //     }
-
-        // }
-
-        class Bullet {
-            constructor(location, color, speed) {
-              this.location = location;
-              this.color = color;
-              this.speed = speed;
-            }
-
-            fire() {
-                // console.log('bullet ' + bulletCount);
-
-
-                // This is all jacked up! The grid and the start location
-                // arent lining up.
-                let bulletStartLocation = this.location;
-                let bulletLocation = this.location;
-                bulletLocation.column = bulletLocation.column + 12;
-
-                console.log(bulletStartLocation.column); 
-                console.log(bulletLocation.column);
-
-                turnOn(bulletLocation, this.color);
-
-                this.moveBullet(bulletLocation, bulletStartLocation);
-            }
-
-            moveBullet(bulletLocation, bulletStartLocation) {
-                console.log(bulletStartLocation.column);
-
-                if (bulletStartLocation.column <= grid.width - 1) {
-                    let move = setInterval(function() {
-                        bulletLocation.column++;
-
-                        if (bulletLocation.column >= grid.width - 1) {
-                            // console.log(bulletLocation.column + grid.width);
-                            // this.removeBullet();
-                            console.log(bulletLocation.column);
-                            clearInterval(move);
-                        }
-                    }, this.speed);
-                }
-            }
-
-            removeBullet() {
-
-            }
-        }
-
-
-        class Location {
-            constructor(row, column) {
-                this.row = row;
-                this.column = column;
-            }
-        }
-
-
-        class Ship {
-            constructor(location, color) {
-                this.location = location;
-                this.color = color;
-            }
-
-            moveUp() {
-                let shipRow = alphabet.indexOf(this.location.row);
-
-                if (shipRow > 0) {
-                    shipRow = shipRow - 1;
-                    this.location.row = alphabet[shipRow];
-                }
-            }
-
-            moveDown() {
-                let shipRow = alphabet.indexOf(this.location.row);
-
-                if (shipRow < 15) {
-                    shipRow = shipRow + 1;
-                    this.location.row = alphabet[shipRow];
-                }
-            }
-
-            moveLeft() {
-                let shipColumn = this.location.column;
-
-                if (shipColumn > 0) {
-                    shipColumn = shipColumn - 1;
-                    this.location.column = shipColumn;
-                }
-            }
-
-            moveRight() {
-                let shipColumn = this.location.column;
-
-                if (shipColumn < 31) {
-                    shipColumn = shipColumn + 1;
-                    this.location.column = shipColumn;
-                }
-            }
-        }
-
-        //** Instructions **//
 
         getBoard("board", "slot", "bg-dark-blue");
         getBoard("board-lights", "light");
 
         let myShip = new Ship(new Location("i", 0), "bg-yellow");
 
-
-
-        // 1) Create an array of game objects, which define their position and color
-        // for loop through all objects...
-        // turn on leds accordingly.. if there is nothing in that space turn the led off
-
-        // turn on light based on fps between 1 (every frame) and 30 (once every 30 frames or once a second)
-        // if (frame % 2 === 0) {
-        //     turnOn(new Location("d", 15), "bg-yellow");
-        // } else {
-        //     turnOff(new Location("d", 15));
-        // }
-        // frame++;
-
-        function render(myShip) {
+        function render(myShip, enemy) {
 
             // cleanup all unused lights
             for (r = 0; r < grid.height; r++) { 
@@ -298,24 +60,33 @@
                 }
             }
 
+            // Turn on lights in the simulator
+
             turnOn(myShip.location, myShip.color);
 
-            turnOn(new Location("i", 16), "bg-pink");
+            new Shape(shapeSmallEnemy).placeShape();
 
-            turnOn(new Location("g", 25), "bg-red");
+            new Shape(shapeLargeEnemy).placeShape();
 
-            turnOn(new Location("b", 7), "bg-green");
 
+            // TODO Create an array of game objects, which define their position and color
+            // for loop through all objects...
+            // turn on leds accordingly.. if there is nothing in that space turn the led off
+
+
+            // Random colors that can be turned on manually
+            // turnOn(new Location("h", 16), "bg-light-blue");
+            // turnOn(new Location("b", 7), "bg-light-blue");
         }
 
+        // Render game at designated fps
         setInterval(render.bind(null, myShip), 1000 / fps);
 
         // keyboard controls
         document.onkeydown = function(e) {
             switch (e.keyCode) {
                 case 32: // spacebar
-                    // bullet(myShip.location, "bg-red", 30);
-                    new Bullet(myShip.location, "bg-green", 30).fire();
+                    new Bullet(myShip.location, "bg-red", 30).fire();
                     break;
                 case 38: // up
                     myShip.moveUp();
@@ -338,66 +109,5 @@
             }
         };
 
-
-        //**  Test FPS **//
-
-        // setTimeout(function() {
-        //     clearInterval(go);
-        // }, 1000);
-
-
-
-        //** Test commands **//
-
-        /*
-        turnOn(new Location("b", 24), "bg-red");
-
-        lightsOn("bg-yellow");
-        setTimeout(function() { lightsOff() }, 3000);
-
-        blink("i15", "bg-red", 500, 1000);
-        blink("i16", "bg-yellow", 500, 1500);
-        blink("i17", "bg-green", 500, 2000);
-        
-
-        // Turn on all the lights
-        function lightsOn(color) {
-            console.log("lights on");
-
-            for (r = 0; r < 16; r++) {
-                for (c = 0; c < 32; c++) {document.getElementById(alphabet[r] + c).classList.add(color);
-                    document.getElementById(alphabet[r] + c).classList.remove(ledColor);
-                }
-            }
-        };
-
-        // Turn all the lights off
-        function lightsOff() {
-            console.log("lights off");
-
-            for (r = 0; r < 16; r++) {
-                for (c = 0; c < 32; c++) {
-                    document.getElementById(alphabet[r] + c).classList.add(ledColor);
-                    document.getElementById(alphabet[r] + c).classList.remove(color);
-                }
-            }
-        }
-
-        // Turn a light on then back off
-        function blink(led, color, duration, delay) {
-            setTimeout(function() {
-                turnOn(null, led, color);
-                document.getElementById(led).classList.add(color);
-                document.getElementById(led).classList.remove(ledColor);
-
-                setTimeout(function() {
-                    document.getElementById(led).classList.add(ledColor);
-                    document.getElementById(led).classList.remove(color);
-                }, duration);
-            }, delay);
-        }
-        */
-
     </script>
-
 </body>
