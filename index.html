@@ -31,8 +31,6 @@
 
     <script>
         //** Variables and setup **//
-        // generate an alphabet
-        let alphabet = "abcdefghijklmnopqrstuvwxyz".split('');
         let bulletShotOrigin = null;
         let bulletLocation = null;
         let bulletFired = false;
@@ -48,25 +46,24 @@
         getBoard("board", "slot", "bg-dark-blue");
         getBoard("board-lights", "light");
 
-        let myShip = new Ship(new Location("i", 0), "bg-yellow");
+        let myShip = new Ship(new Location(6, 0), "bg-yellow");
 
         function render(myShip, enemy) {
 
             // cleanup all unused lights
             for (r = 0; r < grid.height; r++) { 
                 for (c = 0; c < grid.width; c++) {
-                    let led = (new Location(alphabet[r], c))
+                    let led = (new Location(r, c));
                     turnOff(led);
                 }
             }
 
             // Turn on lights in the simulator
-
             turnOn(myShip.location, myShip.color);
 
-            new Shape(shapeSmallEnemy).placeShape();
+            new Shape(shapeSmallEnemy, new Location(9, 24), pattern1).placeShape();
 
-            new Shape(shapeLargeEnemy).placeShape();
+            new Shape(shapeLargeEnemy, new Location(3, 22), pattern1).placeShape();
 
 
             // TODO Create an array of game objects, which define their position and color

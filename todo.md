@@ -1,9 +1,9 @@
 #TODO LIST
 
-X Get bullet moving across the screen
+- Place all bullets into an array
 
-- Allow for multiple bullets at a time
+X Give shapes a point of origin that can be moved around
 
-X Refactor objects into classes
+- Add movement pattern to shapes
 
-X Create a shape
+X more exciting music

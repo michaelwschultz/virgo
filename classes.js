@@ -2,14 +2,25 @@
 
 // shape reqires an array of objects that include location.row, .column and color
 class Shape {
-    constructor(shapeType) {
+    constructor(shapeType, location, movementPattern) {
       this.shapeType = shapeType;
+      this.location = location;
+      this.movementPattern = movementPattern;
     }
 
     placeShape() {
         for (let i = 0; i < this.shapeType.length; i++) {
-            turnOn(new Location(this.shapeType[i].row, this.shapeType[i].column), this.shapeType[i].color);
+            turnOn(new Location(this.shapeType[i].row + this.location.row, this.shapeType[i].column + this.location.column), this.shapeType[i].color);
         }
+    }
+
+    // TODO: add ability to move shape via movementPattern
+    moveShape() {
+        // setTimeout(function() {
+        //     for (let i = 0; i < this.movementPattern.length; i++) {
+        //         this.location = this.movementPattern;
+        //     }
+        // }, 3000);
     }
 }
 
@@ -68,20 +79,20 @@ class Ship {
     }
 
     moveUp() {
-        let shipRow = alphabet.indexOf(this.location.row);
+        let shipRow = this.location.row;
 
         if (shipRow > 0) {
             shipRow = shipRow - 1;
-            this.location.row = alphabet[shipRow];
+            this.location.row = shipRow;
         }
     }
 
     moveDown() {
-        let shipRow = alphabet.indexOf(this.location.row);
+        let shipRow = this.location.row;
 
         if (shipRow < 15) {
             shipRow = shipRow + 1;
-            this.location.row = alphabet[shipRow];
+            this.location.row = shipRow;
         }
     }
 
