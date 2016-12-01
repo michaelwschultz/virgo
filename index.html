@@ -13,11 +13,11 @@
     }
 </style>
 
-<body class="sans-serif pa2 bg-navy" style="height: 100%;">
+<body class="sans-serif pa2 bg-navy" style="height: 100%; line-height: 0;">
 
     <div class="wrapper">
         <div>
-            <h1 class="lightest-blue">LED Board Simulator</h1>
+            <h1 class="lightest-blue pv4 pl2">LED Board Simulator</h1>
             <div id="board-lights" class="absolute"></div>
             <div id="board"></div>
         </div>
@@ -42,12 +42,22 @@
 
         const ledColor = "bg-dark-blue";
 
-
+        // render simulator
         getBoard("board", "slot", "bg-dark-blue");
         getBoard("board-lights", "light");
 
+        // setup game objects
         let myShip = new Ship(new Location(6, 0), "bg-yellow");
+        let smallShip = new Shape(shapeSmallEnemy, new Location(9, 24));
 
+        // for moveShape, pass in pattern, type object and speed
+        smallShip.moveShape([pattern1, pattern2, pattern1], {type: "repeat", number: 3}, 200);
+
+        let largeShip = new Shape(shapeLargeEnemy, new Location(3, 16));
+        largeShip.moveShape([pattern2, pattern2, pattern1], {type: "repeat", number: 3}, 300);
+
+
+        // things to render
         function render(myShip, enemy) {
 
             // cleanup all unused lights
@@ -58,26 +68,21 @@
                 }
             }
 
-            // Turn on lights in the simulator
+            // turn on lights in the simulator
             turnOn(myShip.location, myShip.color);
 
-            new Shape(shapeSmallEnemy, new Location(9, 24), pattern1).placeShape();
+            for (let i = 0; i < smallShip.shapeType.length; i++) {
+                turnOn(new Location(smallShip.shapeType[i].row + smallShip.location.row, smallShip.shapeType[i].column + smallShip.location.column), smallShip.shapeType[i].color);
+            }
 
-            new Shape(shapeLargeEnemy, new Location(3, 22), pattern1).placeShape();
-
-
-            // TODO Create an array of game objects, which define their position and color
-            // for loop through all objects...
-            // turn on leds accordingly.. if there is nothing in that space turn the led off
-
-
-            // Random colors that can be turned on manually
-            // turnOn(new Location("h", 16), "bg-light-blue");
-            // turnOn(new Location("b", 7), "bg-light-blue");
+            for (let i = 0; i < largeShip.shapeType.length; i++) {
+                turnOn(new Location(largeShip.shapeType[i].row + largeShip.location.row, largeShip.shapeType[i].column + largeShip.location.column), largeShip.shapeType[i].color);
+            }
         }
 
-        // Render game at designated fps
+        // render game at designated fps
         setInterval(render.bind(null, myShip), 1000 / fps);
+
 
         // keyboard controls
         document.onkeydown = function(e) {
