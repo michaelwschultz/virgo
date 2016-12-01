@@ -20,10 +20,17 @@ let shapeSmallEnemy = [
 ];
 
 let pattern1 = [
-    {row: null, column: 5},
-    {row: 5, column: null},
-    {row: null, column: 24},
-    {row: 9, column: null}
+    {row: 0, column: -10},
+    {row: -5, column: 0},
+    {row: 0, column: 10},
+    {row: 5, column: 0}
+];
+
+let pattern2 = [
+    {row: 4, column: 3},
+    {row: -4, column: 0},
+    {row: 6, column: 2},
+    {row: -3, column: 6}
 ];
 
 
