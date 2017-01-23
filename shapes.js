@@ -1,5 +1,16 @@
 //** Shapes **//
 
+/* UserShip */
+
+/*
+        •
+*/
+let userShip = [
+    {row: 0, column: 0, color: "bg-yellow"}
+];
+
+
+
 /* Enemies */
 
 /*
@@ -19,21 +30,6 @@ let shapeSmallEnemy = [
     {row: 2, column: 2, color: "bg-orange"}
 ];
 
-let pattern1 = [
-    {row: 0, column: -10},
-    {row: -5, column: 0},
-    {row: 0, column: 10},
-    {row: 5, column: 0}
-];
-
-let pattern2 = [
-    {row: 4, column: 3},
-    {row: -4, column: 0},
-    {row: 6, column: 2},
-    {row: -3, column: 6}
-];
-
-
 /*
          •••
         ••
@@ -51,4 +47,63 @@ let shapeLargeEnemy = [
     {row: 3, column: 1, color: "bg-green"},
     {row: 3, column: 2, color: "bg-green"},
     {row: 3, column: 3, color: "bg-green"}
+];
+
+let gameOver = [
+    {row: 0, column: 0, color: "bg-green"},
+    {row: 0, column: 1, color: "bg-green"},
+    {row: 0, column: 2, color: "bg-green"},
+    {row: 0, column: 3, color: "bg-green"},
+    {row: 0, column: 6, color: "bg-green"},
+    {row: 0, column: 7, color: "bg-green"},
+    {row: 0, column: 8, color: "bg-green"},
+    {row: 0, column: 9, color: "bg-green"},
+    {row: 1, column: 0, color: "bg-green"},
+    {row: 1, column: 6, color: "bg-green"},
+    {row: 1, column: 9, color: "bg-green"},
+    {row: 2, column: 0, color: "bg-green"},
+    {row: 2, column: 6, color: "bg-green"},
+    {row: 2, column: 9, color: "bg-green"},
+    {row: 3, column: 0, color: "bg-green"},
+    {row: 3, column: 2, color: "bg-green"},
+    {row: 3, column: 3, color: "bg-green"},
+    {row: 3, column: 6, color: "bg-green"},
+    {row: 3, column: 9, color: "bg-green"},
+    {row: 4, column: 0, color: "bg-green"},
+    {row: 4, column: 3, color: "bg-green"},
+    {row: 4, column: 6, color: "bg-green"},
+    {row: 4, column: 9, color: "bg-green"},
+    {row: 5, column: 0, color: "bg-green"},
+    {row: 5, column: 1, color: "bg-green"},
+    {row: 5, column: 2, color: "bg-green"},
+    {row: 5, column: 3, color: "bg-green"},
+    {row: 5, column: 6, color: "bg-green"},
+    {row: 5, column: 7, color: "bg-green"},
+    {row: 5, column: 8, color: "bg-green"},
+    {row: 5, column: 9, color: "bg-green"}
+];
+
+
+/* Patterns */
+
+let patternStatic = [
+    {row: 0, column: 0}
+];
+
+let patternDropDown = [
+    {row: 10, column: 0}
+];
+
+let pattern1 = [
+    {row: 0, column: -10},
+    {row: -5, column: 0},
+    {row: 0, column: 10},
+    {row: 5, column: 0}
+];
+
+let pattern2 = [
+    {row: 4, column: 3},
+    {row: -4, column: 0},
+    {row: 6, column: 2},
+    {row: -3, column: 6}
 ];
