@@ -2,169 +2,245 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
 <style>
-    .wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-    }
-    .hidden {
-        visibility: hidden;
-    }
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .hidden {
+    visibility: hidden;
+  }
 </style>
 
 <body class="sans-serif pa2 bg-navy" style="height: 100%; line-height: 0;">
 
-    <div class="wrapper">
-        <div>
-            <h1 class="lightest-blue pv4 pl2">LED Board Simulator</h1>
-            <div id="board-lights" class="absolute"></div>
-            <div id="board"></div>
-        </div>
+  <div class="wrapper">
+    <div>
+      <div class="flex items-end justify-between">
+        <h1 class="lightest-blue pv4 pl2">LED Board Simulator</h1>
+        <p id="soundToggle" class="lightest-blue pv4 pl2" style="cursor: pointer" onClick="toggleSound(this)">Sound on</p>
+      </div>
+      <div id="board-lights" class="absolute"></div>
+      <div id="board"></div>
     </div>
+  </div>
 
+  <!-- Imports -->
+  <script src="simulator.js"></script>
+  <script src="classes.js"></script>
+  <script src="shapes.js"></script>
 
-    <!-- Imports -->
-    <script src="simulator.js"></script>
-    <script src="classes.js"></script>
-    <script src="shapes.js"></script>
+  <script>
+    let bulletCount
+    let bulletFired
+    let bulletLocation
+    let bulletShotOrigin
+    let displayedWelcomeScreen
+    let enemies
+    let fps
+    let frame
+    let gameOverShape
+    let gameRunning
+    let myShip
+    let shapesOnScreen
+    let ship1
+    let ship2
+    let shipColor
+    
+    const grid = {height: 16, width: 32}
+    const ledColor = "bg-dark-blue"
 
-    <script>
-            let bulletShotOrigin;
-            let bulletLocation;
-            let bulletFired;
-            let bulletCount;
-            let shipColor;
-            let fps;
-            let frame;
-            let shapesOnScreen;
-            let gameRunning;
-            let gameOverShape;
+    // render simulator
+    getBoard("board", "slot", "bg-dark-blue")
+    getBoard("board-lights", "light")
 
-            let myShip;
-            let ship1;
-            let ship2;
-            let enemies;
-            
+    // helper for playing sound effects
+    // TODO move this to a better place
+    let soundMuted = false
 
-            let grid = {height: 16, width: 32};
-            const ledColor = "bg-dark-blue";
+    function playSoundEffect(type, name, volume = 1, loop = false) {
+      let audio = new Audio('./sounds/' + type + '/' + name)
+      audio.volume = volume
+      audio.loop = loop
+      if (!soundMuted) {
+        audio.play()
+      }
+    }
 
-            // render simulator
-            getBoard("board", "slot", "bg-dark-blue");
-            getBoard("board-lights", "light");
+    // TODO this doesn't quite work right
+    // comment this function call to unmute sound
+    toggleSound()
+    function toggleSound(e) {
+      soundMuted = !soundMuted
 
-        function init() {
-            //** Variables and setup **//
-            bulletShotOrigin = null;
-            bulletLocation = null;
-            bulletFired = false;
-            bulletCount = 0;
-            shipColor = "";
-            fps = 60;
-            frame = 0;
-            gameRunning = true;
-            gameOverShape = null;
-            
-            shapesOnScreen = {};
+      if (soundMuted) {
+        document.getElementById("soundToggle").style.color = "red"
+        document.getElementById("soundToggle").innerHTML = "Sound off"
+      } else {
+        let sounds = document.getElementsByTagName('audio')
+        console.log(sounds)  
+        for (i = 0; i < sounds.length; i++) {
+          sounds[i].play()
+        }
+        document.getElementById("soundToggle").style.color = "#cdecff"
+        document.getElementById("soundToggle").innerHTML = "Sound on"
+      }
+    }
 
-            // setup game objects
-            myShip = new UserShip(new Shape(userShip, new Location(6, 0)), "my ship", document);
-            ship1 = new EnemyShip(new Shape(shapeSmallEnemy, new Location(9, 18), new MovementPattern([pattern1, pattern2, pattern1], {type: "repeat", number: 3}, 80)), "orange ship");
-            ship2 = new EnemyShip(new Shape(shapeLargeEnemy, new Location(3, 17), new MovementPattern([pattern1, pattern2, pattern1], {type: "repeat", number: 3}, 70)), "green ship");
+    // start bgm
+    playSoundEffect('bgm', 'lf-1.mp3', 0.5, true)
 
-            enemies = [ship1, ship2];
+    function init() {
+      //** Variables and setup **//
+      bulletCount = 0
+      bulletFired = false
+      bulletLocation = null
+      bulletShotOrigin = null
+      fps = 60
+      frame = 0
+      gameOverShape = null
+      gameRunning = true
+      shapesOnScreen = {}
+      shipColor = ""
 
-            for (let i = 0; i < enemies.length; i++) {
-                enemies[i].shape.moveShape();
-            }
+      // setup game objects
+      myShip = new UserShip(
+        new Shape(
+          userShip,
+          new Location(6, 0)
+        ), "my ship", document
+      )
+      ship1 = new EnemyShip(
+        new Shape(
+          shapeSmallEnemy,
+          new Location(9, 18),
+          new MovementPattern (
+            [pattern1, pattern2, pattern1],
+            {type: "repeat", number: 3}, 80
+          )
+        ), "orange ship"
+      )
+      ship2 = new EnemyShip(
+        new Shape(
+          shapeLargeEnemy,
+          new Location(3, 17),
+          new MovementPattern(
+            [pattern1, pattern2, pattern1],
+            {type: "repeat", number: 3},
+            70
+          )
+        ), "green ship"
+      )
+
+      enemies = [ship1, ship2]
+
+      for (let i = 0; i < enemies.length; i++) {
+        enemies[i].shape.moveShape()
+      }
+    }
+
+    function destory() {
+      bulletShotOrigin = null
+      bulletLocation = null
+      bulletFired = null
+      bulletCount = null
+      shipColor = ""
+      fps = null
+      frame = null
+      shapesOnScreen = null
+
+      // setup game objects
+      myShip.destory()
+      myShip = null
+      ship1 = null
+      ship2 = null
+      enemies = null
+
+      gameRunning = false
+
+      gameOverShape = new Shape(
+        gameOver,
+        new Location(-5, 11),
+        new MovementPattern([patternDropDown],
+          {type: "repeat", number: 1},
+          50
+        ),
+        "game over"
+      )
+
+      gameOverShape.moveShape()
+    }
+
+    // things to render
+    function render() {
+      // cleanup all unused lights
+      for (let r = 0; r < grid.height; r++) { 
+        for (let c = 0; c < grid.width; c++) {
+          let led = (new Location(r, c))
+          turnOff(led)
+        }
+      }
+
+      // turn on lights in the simulator
+      if (gameRunning) {
+        turnOn(myShip.shape.location, myShip.shape.shapeType[0].color)
+        for (let b = 0; b < myShip.bullets.length; b++) {
+          turnOn(myShip.bullets[b].location, "bg-red")
         }
 
-        function destory() {
-            bulletShotOrigin = null;
-            bulletLocation = null;
-            bulletFired = null;
-            bulletCount = null;
-            shipColor = "";
-            fps = null;
-            frame = null;
-            shapesOnScreen = null;
-
-            // setup game objects
-            myShip.destory();
-            myShip = null;
-            ship1 = null;
-            ship2 = null;
-            enemies = null;
-
-            gameRunning = false;
-
-            gameOverShape = new Shape(gameOver, new Location(-5, 11), new MovementPattern([patternDropDown], {type: "repeat", number: 1}, 50), "game over");
-
-            gameOverShape.moveShape();
+        // show enemies on screen
+        for (let j = 0; j < enemies.length; j++) {
+          for (let i = 0; i < enemies[j].shape.shapeType.length; i++) {
+            turnOn(
+              new Location(
+                enemies[j].shape.shapeType[i].row + enemies[j].shape.location.row,
+                enemies[j].shape.shapeType[i].column + enemies[j].shape.location.column
+              ),
+              enemies[j].shape.shapeType[i].color
+            )
+          }
         }
-
-        // things to render
-        function render() {
-
-            // cleanup all unused lights
-            for (let r = 0; r < grid.height; r++) { 
-                for (let c = 0; c < grid.width; c++) {
-                    let led = (new Location(r, c));
-                    turnOff(led);
-                }
-            }
-
-            // turn on lights in the simulator
-            if (gameRunning) {
-
-                turnOn(myShip.shape.location, myShip.shape.shapeType[0].color);
-
-                for (let b = 0; b < myShip.bullets.length; b++) {
-                    turnOn(myShip.bullets[b].location, "bg-red");
-                }
-
-                // show enemies on screen
-                for (let j = 0; j < enemies.length; j++) {
-                    for (let i = 0; i < enemies[j].shape.shapeType.length; i++) {
-                        turnOn(new Location(enemies[j].shape.shapeType[i].row + enemies[j].shape.location.row, enemies[j].shape.shapeType[i].column + enemies[j].shape.location.column), enemies[j].shape.shapeType[i].color);
-                    }
-                }
-            } else {
-                // render game over screen defined in destroy function
-                for (let i = 0; i < gameOverShape.shapeType.length; i++) {
-                    turnOn(new Location(gameOverShape.shapeType[i].row + gameOverShape.location.row, gameOverShape.shapeType[i].column + gameOverShape.location.column), gameOverShape.shapeType[i].color);
-                }
-            }
+      } else {
+        // render game over screen defined in destroy function
+        for (let i = 0; i < gameOverShape.shapeType.length; i++) {
+          turnOn(
+            new Location(
+              gameOverShape.shapeType[i].row + gameOverShape.location.row,
+              gameOverShape.shapeType[i].column + gameOverShape.location.column
+            ),
+            gameOverShape.shapeType[i].color
+          )
         }
+      }
+    }
 
-        function collisionCheck() {
-            myShip.collisionCheck(enemies);
+    function collisionCheck() {
+      myShip.collisionCheck(enemies)
 
-            for (let j = 0; j < enemies.length; j++) {
-                enemies[j].collisionCheck([myShip]);
+      for (let j = 0; j < enemies.length; j++) {
+        enemies[j].collisionCheck([myShip])
 
-                if (!enemies[j].alive) {
-                    enemies.splice(j, 1);
-                }
-            }
-
-            if (!myShip.alive || enemies.length == 0) {
-                destory();
-                setTimeout(function() {init()}, 3000);
-            }
+        if (!enemies[j].alive) {
+          enemies.splice(j, 1)
         }
+      }
 
-        function gameLoop() {
-            if (gameRunning) {
-                collisionCheck();
-            }
-            render();
-        }
+      if (!myShip.alive || enemies.length === 0) {
+        destory()
+        setTimeout(function() {init()}, 3000)
+      }
+    }
 
-        // render game at designated fps
-        init();
-        startGame = setInterval(gameLoop, 1000 / fps);
+    function gameLoop() {
+      if (gameRunning) {
+        collisionCheck()
+      }
+      render()
+    }
 
+    // render game at designated fps
+    init()
+    startGame = setInterval(gameLoop, 1000 / fps)
     </script>
 </body>
