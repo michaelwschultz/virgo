@@ -1,19 +1,21 @@
 #TODO LIST
 
-<!-- X Place all bullets into an array
+<!--
 
-X Give shapes a point of origin that can be moved around
+X place all bullets into an array
 
-X Add movement pattern to shapes
+X give shapes a point of origin that can be moved around
 
-X more exciting music -->
+X add movement pattern to shapes
+
+X more exciting music
+
+X give ships health
+
+-->
 
 - Give enemies bullets
-
-- Give ships health
 
 - Better reactions (react to being destroyed)
 
 - Start screen with menu
-
-- Better 

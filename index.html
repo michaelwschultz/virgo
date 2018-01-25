@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
+<link rel="stylesheet" href="tachyons.min.css">
 <style>
   .wrapper {
     display: flex;
@@ -28,6 +28,7 @@
 
   <!-- Imports -->
   <script src="simulator.js"></script>
+  <script src="utils.js"></script>
   <script src="classes.js"></script>
   <script src="shapes.js"></script>
 
@@ -49,47 +50,34 @@
     let shipColor
     
     const grid = {height: 16, width: 32}
-    const ledColor = "bg-dark-blue"
+    const ledColor = 'bg-dark-blue'
 
     // render simulator
-    getBoard("board", "slot", "bg-dark-blue")
-    getBoard("board-lights", "light")
+    getBoard('board', 'slot', 'bg-dark-blue')
+    getBoard('board-lights', 'light')
 
-    // helper for playing sound effects
-    // TODO move this to a better place
-    let soundMuted = false
-
-    function playSoundEffect(type, name, volume = 1, loop = false) {
-      let audio = new Audio('./sounds/' + type + '/' + name)
-      audio.volume = volume
-      audio.loop = loop
-      if (!soundMuted) {
-        audio.play()
-      }
-    }
+    // set sound to off
+    let soundMuted = true
 
     // TODO this doesn't quite work right
     // comment this function call to unmute sound
-    toggleSound()
+    // toggleSound()
     function toggleSound(e) {
       soundMuted = !soundMuted
 
       if (soundMuted) {
-        document.getElementById("soundToggle").style.color = "red"
-        document.getElementById("soundToggle").innerHTML = "Sound off"
+        bgm.pause()
+        document.getElementById('soundToggle').style.color = 'red'
+        document.getElementById('soundToggle').innerHTML = 'Sound off'
       } else {
-        let sounds = document.getElementsByTagName('audio')
-        console.log(sounds)  
-        for (i = 0; i < sounds.length; i++) {
-          sounds[i].play()
-        }
-        document.getElementById("soundToggle").style.color = "#cdecff"
-        document.getElementById("soundToggle").innerHTML = "Sound on"
+        bgm.play()
+        document.getElementById('soundToggle').style.color = '#cdecff'
+        document.getElementById('soundToggle').innerHTML = 'Sound on'
       }
     }
 
     // start bgm
-    playSoundEffect('bgm', 'lf-1.mp3', 0.5, true)
+    const bgm = playSoundEffect('bgm', 'lf-1.mp3', 0.5, true)
 
     function init() {
       //** Variables and setup **//
@@ -109,28 +97,30 @@
         new Shape(
           userShip,
           new Location(6, 0)
-        ), "my ship", document
+        ), 'my ship', 'bg-yellow', 4, document
       )
       ship1 = new EnemyShip(
         new Shape(
           shapeSmallEnemy,
-          new Location(9, 18),
+          new Location(9, 6),
           new MovementPattern (
-            [pattern1, pattern2, pattern1],
-            {type: "repeat", number: 3}, 80
+            // [pattern1, pattern2, pattern1],
+            [patternStatic],
+            {type: 'repeat', number: 3}, 80
           )
-        ), "orange ship"
+        ), 'orange ship', 4
       )
       ship2 = new EnemyShip(
         new Shape(
           shapeLargeEnemy,
-          new Location(3, 17),
+          new Location(3, 6),
           new MovementPattern(
-            [pattern1, pattern2, pattern1],
-            {type: "repeat", number: 3},
+            // [pattern1, pattern2, pattern1],
+            [patternStatic],
+            {type: 'repeat', number: 3},
             70
           )
-        ), "green ship"
+        ), 'green ship', 4
       )
 
       enemies = [ship1, ship2]
@@ -184,7 +174,7 @@
 
       // turn on lights in the simulator
       if (gameRunning) {
-        turnOn(myShip.shape.location, myShip.shape.shapeType[0].color)
+        turnOn(myShip.shape.location, myShip.color)
         for (let b = 0; b < myShip.bullets.length; b++) {
           turnOn(myShip.bullets[b].location, "bg-red")
         }

@@ -99,10 +99,13 @@ class Location {
 }
 
 class Ship {
-  constructor(shape, name) {
-    this.shape = shape
-    this.name = name
+  constructor(shape, name, color, health) {
     this.bullets = []
+    this.health = health
+    this.color = color
+    this.name = name
+    this.shape = shape
+    this.invulnerable = false
   }
 
   fire() {
@@ -114,8 +117,14 @@ class Ship {
     }
   }
 
-  reactToCollision(object) {
-    console.log("Collision with " + object)
+  invulnerablility(time) {
+    this.invulnerable = true
+    this.color = 'bg-pink'
+    return sleep(time)
+      .then(() => {
+        this.invulnerable = false
+        this.color = 'bg-yellow'
+      })
   }
 
   collisionCheck(enemies) {
@@ -133,15 +142,8 @@ class Ship {
           let myColumn = this.shape.shapeType[k].column + this.shape.location.column
 
           if (ledRow == myRow && ledColumn == myColumn) {
-            this.reactToCollision(enemies[i].name)
-            enemies[i].reactToCollision()
-          }
-
-          // loops through my bullets
-          for (let l = 0; l < this.bullets.length; l++) {
-            if (this.bullets[l].location.row == ledRow && this.bullets[l].location.column == ledColumn) {
-              enemies[i].reactToCollision("bullet " + (l + 1))
-              this.bullets.splice(l, 1)
+            if (!this.invulnerable) {
+              this.reactToCollision(enemies[i].name)
             }
           }
 
@@ -158,8 +160,8 @@ class Ship {
 }
 
 class UserShip extends Ship {
-  constructor(shape, name, document) {
-    super(shape, name)
+  constructor(shape, name, color, health, document, invulnerable) {
+    super(shape, name, color, health, invulnerable)
     this.document = document
     this.alive = true
 
@@ -196,9 +198,20 @@ class UserShip extends Ship {
   }
     
   reactToCollision(enemyShape) {
-    this.alive = false
-    playSoundEffect('explosions', '5.wav')
-    console.log("you are dead")
+    this.health--
+    console.log('---------- \n Our health ' + this.health)
+    if (this.health <= 0) {
+        this.alive = false
+        playSoundEffect('explosions', '5.wav')
+        console.log("you are dead")
+    }
+    this.color = 'bg-purple'
+    const hit = playSoundEffect('lasers', '3.wav', 0.5, true)
+    this.invulnerablility(2000)
+      .then(() => {
+        this.color = 'bg-yellow'
+        hit.pause()
+      })
   }
 
   moveUp() {
@@ -239,8 +252,8 @@ class UserShip extends Ship {
 }
 
 class EnemyShip extends Ship {
-  constructor(shape, name) {
-    super(shape, name)
+  constructor(shape, name, health) {
+    super(shape, name, health)
     this.alive = true
   }
 
@@ -249,8 +262,12 @@ class EnemyShip extends Ship {
   }
     
   reactToCollision() {
-    this.alive = false
-    playSoundEffect('explosions', '1.wav', 0.5)
-    console.log("ship destroyed")
+    this.health--
+    if (this.health <= 0) {
+        this.alive = false
+        playSoundEffect('explosions', '1.wav', 0.5)
+        console.log("enemy ship destroyed")
+    }
+    this.invulnerablility(2000)
   }
 }
