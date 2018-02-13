@@ -11,6 +11,29 @@
   .hidden {
     visibility: hidden;
   }
+  .s-noselect { 
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  #s-rectBox { 
+    position: absolute;
+    z-index: 1090;
+    border: 2px dashed #cbd3e3; 
+  }
+  #board-lights {
+    pointer-events: none;
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+  .selected {
+    background: white !important;
+  }
 </style>
 
 <body class="sans-serif pa2 bg-navy" style="height: 100%; line-height: 0;">
@@ -31,6 +54,7 @@
   <script src="utils.js"></script>
   <script src="classes.js"></script>
   <script src="shapes.js"></script>
+  <script src="selectables.js"></script>
 
   <script>
     let bulletCount
@@ -55,6 +79,17 @@
     // render simulator
     getBoard('board', 'slot', 'bg-dark-blue')
     getBoard('board-lights', 'light')
+
+
+    let newShape = new Selectables({
+      zone: '#board',
+      elements: 'li',
+      selectedClass: 'selected',
+      key: 'altKey',
+      stop: function (el) {
+       console.log('newShape: ', newShape);
+      }
+    })
 
     // set sound to off
     let soundMuted = true
@@ -162,7 +197,24 @@
       gameOverShape.moveShape()
     }
 
-    // things to render
+    function collisionCheck() {
+      myShip.collisionCheck(enemies)
+
+      for (let j = 0; j < enemies.length; j++) {
+        enemies[j].collisionCheck([myShip])
+
+        if (!enemies[j].alive) {
+          enemies.splice(j, 1)
+        }
+      }
+
+      if (!myShip.alive || enemies.length === 0) {
+        destory()
+        setTimeout(function() {init()}, 3000)
+      }
+    }
+
+    // render
     function render() {
       // cleanup all unused lights
       for (let r = 0; r < grid.height; r++) { 
@@ -202,23 +254,6 @@
             gameOverShape.shapeType[i].color
           )
         }
-      }
-    }
-
-    function collisionCheck() {
-      myShip.collisionCheck(enemies)
-
-      for (let j = 0; j < enemies.length; j++) {
-        enemies[j].collisionCheck([myShip])
-
-        if (!enemies[j].alive) {
-          enemies.splice(j, 1)
-        }
-      }
-
-      if (!myShip.alive || enemies.length === 0) {
-        destory()
-        setTimeout(function() {init()}, 3000)
       }
     }
 

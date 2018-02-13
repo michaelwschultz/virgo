@@ -10,10 +10,10 @@ function getBoard(boardName, ledName, defaultColor = "") {
   // place the LED's
   for (r = 0; r < grid.height; r++) { 
     let currentRow = 'row-' + r
-    document.getElementById(boardName).innerHTML += "<div id='row-" + r + "'></div>"
+    document.getElementById(boardName).innerHTML += "<ul id='row-" + r + "'></ul>"
 
     for (c = 0; c < grid.width; c++) {
-      document.getElementById(currentRow).innerHTML += "<div id='" + r + "-" + c + "-" + ledName + "' class='dib pa1 ma2 br-100 " + hidden + " " + defaultColor + "'></div>"
+      document.getElementById(currentRow).innerHTML += "<li id='" + r + "-" + c + "-" + ledName + "' class='dib pa1 ma2 br-100 " + hidden + " " + defaultColor + "'></li>"
     }
   }
 }

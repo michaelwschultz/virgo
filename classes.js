@@ -22,7 +22,7 @@ class Shape {
       if (columnSteps == 0 && rowSteps == 0) {
         // move to next item in movementSequence
         i++
-        // has the hole pattern completed?
+        // has the whole pattern completed?
         if (i == movementSequence.length) {
           let numberOfRepeats = movementType.number - 1
           if (movementType.type == "repeat" && numberOfRepeats !== 0) {
