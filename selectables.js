@@ -20,12 +20,21 @@ function Selectables(opts) {
         onSelect: null, // event fired on every item when selected.               
         onDeselect: null         // event fired on every item when selected.
     };
+    let selected = [];
+    let saveButton = document.getElementById('saveButton');
+    saveButton.addEventListener('click', function() {
+        console.log('SELECTED :', selected);
+    });
     var extend = function extend(a, b) {
         for (var prop in b) {
             a[prop] = b[prop];
         }
         return a;
     };
+    function remove(array, element) {
+        const index = array.indexOf(element);
+        array.splice(index, 1);
+    }
     this.foreach = function (items, callback, scope) {
         if (Object.prototype.toString.call(items) === '[object Object]') {
             for (var prop in items) {
@@ -81,6 +90,7 @@ function Selectables(opts) {
             el.addEventListener('click', self.suspend, true); //skip any clicks
             if (!e[self.options.moreUsing]) {
                 el.classList.remove(self.options.selectedClass);
+                remove(selected, el.id)
             }
         });
         self.ipos = [e.pageX, e.pageY];
@@ -114,9 +124,11 @@ function Selectables(opts) {
         self.foreach(self.items, function (el) {
             if (cross(a, el) === true) {
                 if (el.classList.contains(s)) {
+                    remove(selected, el.id)
                     el.classList.remove(s);
                     self.options.onDeselect && self.options.onDeselect(el);
                 } else {
+                    selected.push(el.id)
                     el.classList.add(s);
                     self.options.onSelect && self.options.onSelect(el);
                 }

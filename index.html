@@ -46,6 +46,7 @@
       </div>
       <div id="board-lights" class="absolute"></div>
       <div id="board"></div>
+      <button id="saveButton" class="pa3">Save Shape</button>
     </div>
   </div>
 
@@ -85,10 +86,7 @@
       zone: '#board',
       elements: 'li',
       selectedClass: 'selected',
-      key: 'altKey',
-      stop: function (el) {
-       console.log('newShape: ', newShape);
-      }
+      key: 'altKey'
     })
 
     // set sound to off
