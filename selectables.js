@@ -10,7 +10,7 @@ function Selectables(opts) {
     'use strict';
     var defaults = {
         zone: "#wrapper", // ID of the element whith selectables.        
-        elements: "a", //  items to be selectable .list-group, #id > .class,'htmlelement' - valid querySelectorAll        
+        elements: "a", // items to be selectable .list-group, #id > .class,'htmlelement' - valid querySelectorAll        
         selectedClass: 'active', // class name to apply to seleted items      
         key: false, //'altKey,ctrlKey,metaKey,false  // activate using optional key     
         moreUsing: 'shiftKey', //altKey,ctrlKey,metaKey   // add more to selection
@@ -18,13 +18,30 @@ function Selectables(opts) {
         start: null, //  event on selection start
         stop: null, // event on selection end
         onSelect: null, // event fired on every item when selected.               
-        onDeselect: null         // event fired on every item when selected.
+        onDeselect: null // event fired on every item when selected.
     };
     let selected = [];
     let saveButton = document.getElementById('saveButton');
     saveButton.addEventListener('click', function() {
-        console.log('SELECTED :', selected);
+        buildShapeObject(selected);
     });
+
+    function buildShapeObject(selected) {
+        selected.map(slot => {
+            slot = slot.split('-');
+            const shape = {row: slot[0], column: slot[1], color: 'bg-orange'};
+      });
+    };
+
+    // TODO: need to add node to make this work
+    fs.appendFileSync('shapes.js',
+        shape,
+        function (err) {
+          if (err) throw err;
+          console.log('Saved shape!');
+        }
+    );
+
     var extend = function extend(a, b) {
         for (var prop in b) {
             a[prop] = b[prop];
