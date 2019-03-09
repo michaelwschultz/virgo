@@ -27,20 +27,39 @@ function Selectables(opts) {
     });
 
     function buildShapeObject(selected) {
-        selected.map(slot => {
+        const shapeName = prompt("What do you want to call your shape?", "shape-name");
+        if (shapeName === null) {
+            return;
+        }
+
+        const config = selected.map(slot => {
             slot = slot.split('-');
-            const shape = {row: slot[0], column: slot[1], color: 'bg-orange'};
-      });
+            return {row: slot[0], column: slot[1], color: 'bg-orange'};
+        });
+
+        fetch('/save-shape', {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit   
+            headers: {
+                "Content-Type": "application/json",
+                // "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: JSON.stringify({
+                name: shapeName,
+                config
+            }), // body data type must match "Content-Type" header
+        });
     };
 
     // TODO: need to add node to make this work
-    fs.appendFileSync('shapes.js',
-        shape,
-        function (err) {
-          if (err) throw err;
-          console.log('Saved shape!');
-        }
-    );
+    // fs.appendFileSync('shapes.js',
+    //     shape,
+    //     function (err) {
+    //       if (err) throw err;
+    //       console.log('Saved shape!');
+    //     }
+    // );
 
     var extend = function extend(a, b) {
         for (var prop in b) {

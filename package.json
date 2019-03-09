@@ -4,8 +4,10 @@
   "description": "Side-scrolling Space Shooter built on NodeJS and Raspberry Pi",
   "main": "index.js",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "sequelize": "^4.43.0",
+    "sequelize-cli": "^5.4.0",
     "sqlite3": "^4.0.6"
   },
   "devDependencies": {},
