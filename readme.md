@@ -19,6 +19,6 @@ After browsing around [Adafruit.com](http://adafruit.com) looking at all the dif
 - No collision detection
 - I could go on and on, but hey... it's a work in progress
 
-If you REALLY want to check out what I've finished so far you can run the game in the simulator now by starting a python server inside the root directory.
+If you REALLY want to check out what I've finished so far you can run the game in the simulator now by running:
 
-`$ python -m SimpleHTTPServer`
+`npm start`
