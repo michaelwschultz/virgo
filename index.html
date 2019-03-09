@@ -40,13 +40,16 @@
 
   <div class="wrapper">
     <div>
-      <div class="flex items-end justify-between">
-        <h1 class="lightest-blue pv4 pl2">LED Board Simulator</h1>
-        <p id="soundToggle" class="lightest-blue pv4 pl2" style="cursor: pointer" onClick="toggleSound(this)">Sound on</p>
+      <div class="flex items-center justify-between ph2">
+        <h1 class="lightest-blue pv4">LED Board Simulator</h1>
+        <p id="soundToggle" class="lightest-blue pv4" style="cursor: pointer" onClick="toggleSound(this)">Sound on</p>
       </div>
       <div id="board-lights" class="absolute"></div>
       <div id="board"></div>
-      <button id="saveButton" class="pa3">Save Shape</button>
+      <div class="flex items-center justify-end mt2 ph2">
+        <button type="button" id="loadButton" class="pa3">Load Shape</button>
+        <button type="button" id="saveButton" class="pa3">Save Shape</button>
+      </div>
     </div>
   </div>
 

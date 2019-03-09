@@ -25,6 +25,25 @@ const sequelize = new Sequelize('spaceshooterdb', 'root', null, {
   operatorsAliases: false
 });
 
+app.get('/get-shape', (req, res, next) => {
+  const {
+    name,
+  } = req.body;
+
+  console.log(name)
+
+  sequelize.sync()
+    .then(() => Shape.findOne({
+      where: {
+        id: 1,
+      }
+    }))
+    .then(shape => {
+      res.send(shape);
+    })
+});
+
+
 app.post('/save-shape', (req, res, next) => {
   const {
     name,

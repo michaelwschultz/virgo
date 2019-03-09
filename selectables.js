@@ -21,10 +21,39 @@ function Selectables(opts) {
         onDeselect: null // event fired on every item when selected.
     };
     let selected = [];
+    let loadButton = document.getElementById('loadButton');
     let saveButton = document.getElementById('saveButton');
+
+    loadButton.addEventListener('click', function() {
+        loadShapeObject();
+    });
+
     saveButton.addEventListener('click', function() {
         buildShapeObject(selected);
     });
+
+    // TODO: get-shape fetch doesn't work yet
+    async function loadShapeObject() {
+        const shapeName = prompt("Which shape do you want to load?", "shape-name");
+        if (shapeName === null) {
+            return;
+        }
+
+        const shape = await fetch('/get-shape', {
+            method: "GET", // *GET, POST, PUT, DELETE, etc.
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit   
+            headers: {
+                "Content-Type": "application/json",
+                // "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: JSON.stringify({
+                name: shapeName,
+            }), // body data type must match "Content-Type" header
+        });
+
+        console.log('shape from database', shape)
+    }
 
     function buildShapeObject(selected) {
         const shapeName = prompt("What do you want to call your shape?", "shape-name");
@@ -51,15 +80,6 @@ function Selectables(opts) {
             }), // body data type must match "Content-Type" header
         });
     };
-
-    // TODO: need to add node to make this work
-    // fs.appendFileSync('shapes.js',
-    //     shape,
-    //     function (err) {
-    //       if (err) throw err;
-    //       console.log('Saved shape!');
-    //     }
-    // );
 
     var extend = function extend(a, b) {
         for (var prop in b) {
@@ -175,6 +195,7 @@ function Selectables(opts) {
         });
         a.parentNode.removeChild(a);
         self.options.stop && self.options.stop(e);
+        console.log(selected)
     }
     this.rectDraw = function (e) {
         var g = rb();
