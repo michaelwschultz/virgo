@@ -1,0 +1,32 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+.hidden {
+  visibility: hidden;
+}
+.s-noselect { 
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+#s-rectBox { 
+  position: absolute;
+  z-index: 1090;
+  border: 2px dashed #cbd3e3; 
+}
+#board-lights {
+  pointer-events: none;
+}
+ul {
+  margin: 0;
+  padding: 0;
+}
+.selected {
+  background: white !important;
+}

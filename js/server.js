@@ -4,6 +4,8 @@ const port = 3000
 const Sequelize = require('sequelize');
 
 const bodyParser = require('body-parser');
+const Op = Sequelize.Op;
+const Model = Sequelize.Model;
 
 app.use(bodyParser.json());
 
@@ -15,7 +17,7 @@ const sequelize = new Sequelize('spaceshooterdb', 'root', null, {
     max: 5,
     min: 0,
     acquire: 30000,
-    idle: 10000
+    idle: 10000,
   },
 
   // SQLite only
@@ -25,58 +27,59 @@ const sequelize = new Sequelize('spaceshooterdb', 'root', null, {
   operatorsAliases: false
 });
 
-app.get('/get-shape', (req, res, next) => {
-  const {
-    name,
-  } = req.body;
-
-  console.log(name)
-
-  sequelize.sync()
-    .then(() => Shape.findOne({
-      where: {
-        id: 1,
-      }
-    }))
-    .then(shape => {
-      res.send(shape);
-    })
+const Shape = sequelize.define('shapes', {
+  id: {
+    type: Sequelize.INTEGER,
+    unique: true,
+    allowNull: false,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    unique: true,
+  },
 });
 
+const ShapeConfig = sequelize.define('shape_configs', {
+  shape_id: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: Shape,
+      key: 'id',
+    }
+  },
+  color: Sequelize.STRING,
+  row: Sequelize.INTEGER,
+  column: Sequelize.INTEGER
+});
+
+Shape.hasMany(ShapeConfig, { foreignKey: 'shape_id', sourceKey: 'id' });
+
+app.get('/get-shape', (req, res, next) => {
+  const { name } = req.query;
+  console.log(name);
+  Shape.findAll({
+    where: {
+      name,
+    },
+    include: [{
+      model: ShapeConfig
+    }]
+  })
+  .then(shape => {
+    const shapeJSON = JSON.stringify(shape, null, 2);
+    console.log(shapeJSON)
+    res.send(shapeJSON);
+  });
+});
 
 app.post('/save-shape', (req, res, next) => {
   const {
     name,
     config,
   } = req.body;
-
-  const Shape = sequelize.define('shape', {
-    id: {
-      type: Sequelize.INTEGER,
-      unique: true,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    name: {
-      type: Sequelize.STRING,
-      allowNull: false,
-      unique: true,
-    },
-  });
-
-  const ShapeConfig = sequelize.define('shape_config', {
-    shape_id: { 
-      type: Sequelize.INTEGER, 
-      references: {
-        model: Shape,
-        key: 'id',
-      }
-    },
-    color: Sequelize.STRING,
-    row: Sequelize.INTEGER,
-    column: Sequelize.INTEGER 
-  });
 
   sequelize.sync()
     .then(() => Shape.create({

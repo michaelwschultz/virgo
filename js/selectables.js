@@ -21,25 +21,20 @@ function Selectables(opts) {
         onDeselect: null // event fired on every item when selected.
     };
     let selected = [];
-    let loadButton = document.getElementById('loadButton');
     let saveButton = document.getElementById('saveButton');
-
-    loadButton.addEventListener('click', function() {
-        loadShapeObject();
-    });
 
     saveButton.addEventListener('click', function() {
         buildShapeObject(selected);
     });
 
     // TODO: get-shape fetch doesn't work yet
-    async function loadShapeObject() {
+    this.loadShapeObject = async function() {
         const shapeName = prompt("Which shape do you want to load?", "shape-name");
         if (shapeName === null) {
             return;
         }
-
-        const shape = await fetch('/get-shape', {
+        console.log("shapeName: ", shapeName);
+        const shape = await fetch(`/get-shape?name=${shapeName}`, {
             method: "GET", // *GET, POST, PUT, DELETE, etc.
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit   
@@ -47,12 +42,9 @@ function Selectables(opts) {
                 "Content-Type": "application/json",
                 // "Content-Type": "application/x-www-form-urlencoded",
             },
-            body: JSON.stringify({
-                name: shapeName,
-            }), // body data type must match "Content-Type" header
         });
-
-        console.log('shape from database', shape)
+        
+        return shape.json().then(data => data[0]);
     }
 
     function buildShapeObject(selected) {
@@ -195,7 +187,7 @@ function Selectables(opts) {
         });
         a.parentNode.removeChild(a);
         self.options.stop && self.options.stop(e);
-        console.log(selected)
+        console.log('Selected leds:', selected)
     }
     this.rectDraw = function (e) {
         var g = rb();
