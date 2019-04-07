@@ -7,7 +7,7 @@ class Shape {
     this.location = location
     this.movementPattern = movementPattern
   }
-  
+
   // loop = 0 means infinite, anything else will only loop that many times.
   moveShape() {
     let i = 0
@@ -18,7 +18,7 @@ class Shape {
     let rowSteps = movementSequence[i].row
     let columnSteps = movementSequence[i].column
 
-    let move = setInterval(function() {  
+    let move = setInterval(function() {
       if (columnSteps == 0 && rowSteps == 0) {
         // move to next item in movementSequence
         i++
@@ -40,7 +40,7 @@ class Shape {
         }
         rowSteps = movementSequence[i].row
         columnSteps = movementSequence[i].column
-      }  
+      }
       if (rowSteps !== 0) {
         this.location.row += rowSteps / Math.abs(rowSteps)
         rowSteps -= rowSteps / Math.abs(rowSteps)
@@ -59,6 +59,7 @@ class Bullet {
     this.color = color
     this.speed = speed
     this.moveBullet(this.location)
+    this.alive = true
   }
 
   moveBullet(bulletStartLocation) {
@@ -75,6 +76,10 @@ class Bullet {
         }
       }.bind(this), this.speed)
     }
+  }
+
+  destroy()  {
+    this.alive = false
   }
 }
 
@@ -127,6 +132,15 @@ class Ship {
       })
   }
 
+  isOffScreen() {
+    for (let k = 0; k < this.shape.shapeType.length; k++) {
+      let myColumn = this.shape.shapeType[k].column + this.shape.location.column
+      if (myColumn >= 0) return false
+    }
+
+    return true
+  }
+
   collisionCheck(enemies) {
     // loop through enemy list
     for (let i = 0; i < enemies.length; i++) {
@@ -143,20 +157,24 @@ class Ship {
 
           if (ledRow == myRow && ledColumn == myColumn) {
             if (!this.invulnerable) {
-              this.reactToCollision(enemies[i].name)
+              this.reactToCollision(true)
             }
           }
 
           // loop through enemy bullets
           for (let l = 0; l < enemies[i].bullets.length; l++) {
-            if (enemies[i].bullets[l].location.row == myRow && enemies[i].bullets[l].location.column == myColumn) {
-              this.reactToCollision("bullet " + (l + 1))
+            if (enemies[i].bullets[l]) {
+              if (enemies[i].bullets[l].location.row == myRow && enemies[i].bullets[l].location.column == myColumn) {
+                this.reactToCollision()
+                enemies[i].bullets[l].destroy()
+                enemies[i].bullets.splice(l, 1)
+              }
             }
           }
         }
       }
     }
-  }   
+  }
 }
 
 class UserShip extends Ship {
@@ -193,11 +211,11 @@ class UserShip extends Ship {
     }.bind(this)
   }
 
-  destory() {
+  destroy() {
     this.document.onkeydown = null
   }
-    
-  reactToCollision(enemyShape) {
+
+  reactToCollision() {
     this.health--
     console.log('---------- \n Our health ' + this.health)
     if (this.health <= 0) {
@@ -253,21 +271,43 @@ class UserShip extends Ship {
 
 class EnemyShip extends Ship {
   constructor(shape, name, health) {
-    super(shape, name, health)
+    super(shape, name, null, health)
     this.alive = true
   }
 
-  destory() {
+  destroy() {
     // do something here
+    this.alive = false
+    playSoundEffect('explosions', '1.wav', 0.5)
   }
-    
-  reactToCollision() {
+
+  reactToCollision(collidedWithPlayer = false) {
+    if (collidedWithPlayer) this.destroy()
     this.health--
     if (this.health <= 0) {
-        this.alive = false
-        playSoundEffect('explosions', '1.wav', 0.5)
-        console.log("enemy ship destroyed")
+      this.destroy()
     }
-    this.invulnerablility(2000)
+  }
+}
+
+class Level {
+  constructor(enemyNames) {
+    this.enemyNames = enemyNames
+  }
+
+  async loadLevel() {
+    return Promise.all(this.enemyNames.map(async (name) => {
+      const shape = await fetch(`/get-shape?name=${name}`, {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+          "Content-Type": "application/json",
+          // "Content-Type": "application/x-www-form-urlencoded",
+        },
+      })
+
+      return shape.json().then(data => data[0])
+    }))
   }
 }
