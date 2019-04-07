@@ -270,8 +270,8 @@ class UserShip extends Ship {
 }
 
 class EnemyShip extends Ship {
-  constructor(shape, name, health) {
-    super(shape, name, null, health)
+  constructor(shape, name, color, health) {
+    super(shape, name, color, health)
     this.alive = true
   }
 

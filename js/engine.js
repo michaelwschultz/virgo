@@ -82,7 +82,7 @@ async function init() {
           [patternScroll],
           { type: 'repeat', number: 3 }, 30
         )
-      ), enemy.name, 4
+      ), enemy.name, enemy.shape_configs[0].color, 4
     )
   })
 
@@ -95,7 +95,6 @@ async function init() {
   )
 
   enemies[0].shape.moveShape()
-
 
   let loadButton = document.getElementById('loadButton')
 
@@ -186,16 +185,15 @@ function render() {
     }
 
     // show enemies on screen
-
-      for (let i = 0; i < enemies[0].shape.shapeType.length; i++) {
-        turnOn(
-          new Location(
-            enemies[0].shape.shapeType[i].row + enemies[0].shape.location.row,
-            enemies[0].shape.shapeType[i].column + enemies[0].shape.location.column
-          ),
-          enemies[0].shape.shapeType[i].color
-        )
-      }
+    for (let i = 0; i < enemies[0].shape.shapeType.length; i++) {
+      turnOn(
+        new Location(
+          enemies[0].shape.shapeType[i].row + enemies[0].shape.location.row,
+          enemies[0].shape.shapeType[i].column + enemies[0].shape.location.column
+        ),
+        enemies[0].shape.shapeType[i].color
+      )
+    }
 
     Object.entries(shapesOnScreen).forEach(([shapeName, shape]) => {
       shape.shape_configs.forEach(config => {
