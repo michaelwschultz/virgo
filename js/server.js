@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 3001
 const Sequelize = require('sequelize');
 
 const bodyParser = require('body-parser');
@@ -93,7 +93,7 @@ app.post('/save-shape', (req, res, next) => {
           row: config.row,
           column: config.column,
         })
-      });  
+      });
     });
 
     res.send('Hey');

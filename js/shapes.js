@@ -5,7 +5,12 @@
         •
 */
 const userShip = [
-  {row: 0, column: 0, color: "bg-yellow"}
+  { row: 0, column: 0, color: "bg-yellow" },
+  { row: 0, column: 1, color: "bg-yellow" },
+  { row: 0, column: 2, color: "bg-yellow" },
+  { row: 0, column: 3, color: "bg-yellow" },
+  { row: -1, column: 1, color: "bg-yellow" },
+  { row: 1, column: 1, color: "bg-yellow" },
 ]
 
 /* Enemies */
@@ -97,4 +102,8 @@ const pattern2 = [
   {row: -4, column: 0},
   {row: 6, column: 2},
   {row: -3, column: 6}
+]
+
+const patternScroll = [
+  { row: 0, column: -1 },
 ]
