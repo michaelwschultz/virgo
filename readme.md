@@ -1,4 +1,5 @@
 # Space Shooter for Raspberry Pi and LED display
+[![CircleCI](https://circleci.com/gh/michaelwschultz/space-shooter-led.svg?style=svg)](https://circleci.com/gh/michaelwschultz/space-shooter-led)
 
 Written by [Michael Schultz](http://twitter.com/michaelschultz) with MASSIVE help from [Marc Mendiola](http://twitter.com/codemookie) and the folks who've contributed during one of my live streams on [Twitch.tv](https://www.twitch.tv/idigg). People that put up with my never ending questions... Sam McDonald and Scott Southerland.
 
