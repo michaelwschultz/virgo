@@ -17,9 +17,14 @@ After browsing around [Adafruit.com](http://adafruit.com) looking at all the dif
 ## Known Issues
 - This code currently only runs in the web simulator (Raspberry Pi support coming soon)
 - Frame rate isn't always rock solid (thanks to Javascript)
-- No collision detection
+- ~~No collision detection~~
 - I could go on and on, but hey... it's a work in progress
 
 If you REALLY want to check out what I've finished so far you can run the game in the simulator now by running:
 
-`npm start`
+`yarn start`
+`yarn test`
+
+## Design
+Designs are also a work in progress but we have a Figma file that you're welcome to take a look at.
+[Figma - Space Shooter](https://www.figma.com/file/ZdafTZipsZgCy0pVW7ywhoDz/LED-screen?node-id=0%3A1)
