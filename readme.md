@@ -26,5 +26,4 @@ If you REALLY want to check out what I've finished so far you can run the game i
 `yarn test`
 
 ## Design
-Designs are also a work in progress but we have a Figma file that you're welcome to take a look at.
-[Figma - Space Shooter](https://www.figma.com/file/ZdafTZipsZgCy0pVW7ywhoDz/LED-screen?node-id=0%3A1)
+Designs are also a work in progress but we have a [Figma file](https://www.figma.com/file/ZdafTZipsZgCy0pVW7ywhoDz/LED-screen?node-id=0%3A1) that you're welcome to take a look at.
