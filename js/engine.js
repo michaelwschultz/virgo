@@ -20,10 +20,10 @@ let ship2
 let shipColor
 
 const grid = {height: 64, width: 32}
-const ledColor = 'bg-dark-blue'
+const ledColor = 'led-off'
 
 // render simulator
-getBoard('board', 'slot', 'bg-dark-blue')
+getBoard('board', 'slot', ledColor)
 getBoard('board-lights', 'light')
 
 
@@ -95,13 +95,13 @@ async function init() {
     ]),
   ]
 
+  console.debug('Starting level 1')
   setTimeout(async () => await transitionLevel(), 5000)
-  lightInterval = setInterval(() => levelLightOn = !levelLightOn, 500);
+  lightInterval = setInterval(() => levelLightOn = !levelLightOn, 500)
 }
 
 
 async function transitionLevel() {
-  console.debug(`Starting level ${currentLevel}`)
   if (currentLevel > levels.length) {
     return destroy()
   }
@@ -137,6 +137,8 @@ async function transitionLevel() {
 }
 
 function destroy() {
+  console.log("Game Over")
+
   bulletShotOrigin = null
   bulletLocation = null
   bulletFired = null
@@ -154,7 +156,7 @@ function destroy() {
 
   gameRunning = false
   inTransition = false
-  console.log("Enemy destroyed");
+
   gameOverShape = new Shape(
     gameOver,
     new Location(-5, 11),
@@ -171,16 +173,17 @@ function destroy() {
 function collisionCheck() {
 
   if (!myShip.alive || enemies.length === 0) {
-    gameRunning = false
-    currentLevel++
+    gameRunning = false;
+    currentLevel++;
     if (currentLevel >= levels.length + 1) {
       inTransition = false
       clearInterval(lightInterval);
       return destroy()
     } else {
+      console.debug(`Starting level ${currentLevel}`);
       inTransition = true
       lightInterval = setInterval(() => levelLightOn = !levelLightOn, 500);
-      setTimeout(async function () { await transitionLevel() }, 5000)
+      setTimeout(async function () { await transitionLevel() }, 5000);
     }
   }
 
