@@ -113,7 +113,7 @@ class Ship {
     // make sure ship has room to fire
     if (this.shape.location.column < grid.width) {
       this.bullets.push(new Bullet(new Location(this.shape.location.row, this.shape.location.column), "bg-red", 20))
-      console.log('Fired bullet ' + this.bullets.length)
+      console.log('Fired bullet')
       playSoundEffect('lasers', '3.wav', 0.5)
     }
   }
@@ -223,11 +223,11 @@ class UserShip extends Ship {
 
   reactToCollision() {
     this.health--
-    console.log('---------- \n Our health ' + this.health)
+    console.warn('Player health: ' + this.health)
     if (this.health <= 0) {
         this.alive = false
         playSoundEffect('explosions', '5.wav')
-        console.log("you are dead")
+        console.warn('Player is dead')
     }
     this.color = 'bg-purple'
     const hit = playSoundEffect('lasers', '3.wav', 0.5, true)

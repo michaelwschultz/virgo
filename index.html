@@ -4,31 +4,57 @@
 <link rel="stylesheet" href="styles/global.css">
 
 <body class="sans-serif pa2 bg-navy" style="height: 100%;">
-  <div class="flex justify-between">
-    <div class="wrapper">
-      <div>
-        <div class="flex items-center justify-between ph2">
-          <h1 class="lightest-blue pv4">LED Board Simulator</h1>
+  <div class="container">
+
+    <div class="flex items-center justify-between">
+      <h2 class="lightest-blue pv2">LED Board Simulator</h2>
+      <div id="utilties" class="flex items-center justify-between">
+        <div class="flex items-center mt2">
+          <button type="button" id="loadButton">Load Shape</button>
+          <button type="button" id="saveButton">Save Shape</button>
+        </div>
+        <div class="flex items-center">
+          <p class="lightest-blue ph2">Sound</p>
           <label class="switch">
             <input type="checkbox" onClick="toggleSound()" />
             <div></div>
           </label>
         </div>
-        <div id="board-lights" class="absolute"></div>
-        <div id="board"></div>
-        <div class="flex items-center justify-end mt2 ph2">
-          <button type="button" id="loadButton" class="pa3">Load Shape</button>
-          <button type="button" id="saveButton" class="pa3">Save Shape</button>
-        </div>
       </div>
     </div>
-    <div
-      id="log"
-      style="background: #000E20; color: #07336B; width: 400px; height: 600px; overflow-y: scroll; padding: 8px;"
-    ></div>
+
+    <div class="flex justify-between flex-wrap">
+      <div id="simulator">
+        <div id="board-lights" class="absolute"></div>
+        <div id="board"></div>
+      </div>
+
+      <div id="console">
+        <div id="legend" class="flex justify-between mv2">
+          <div class="flex items-center log">
+            <div style="width: 8px; height: 8px; border-radius: 8px; margin-right: 4px;"></div>
+            log
+          </div>
+          <div class="flex items-center debug">
+            <div style="width: 8px; height: 8px; border-radius: 8px; margin-right: 4px;"></div>
+            debug
+          </div>
+          <div class="flex items-center warn">
+            <div style="width: 8px; height: 8px; border-radius: 8px; margin-right: 4px;"></div>
+            warn
+          </div>
+          <div class="flex items-center error">
+            <div style="width: 8px; height: 8px; border-radius: 8px; margin-right: 4px;"></div>
+            error
+          </div>
+        </div>
+        <div id="log"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Imports -->
+  <script src="js/console.js"></script>
   <script src="js/simulator.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/classes.js"></script>
@@ -37,22 +63,7 @@
   <script src="js/engine.js"></script>
 
   <script>
-
-  var log = document.querySelector('#log');
-  ['log','debug','info','warn','error'].forEach(function (verb) {
-      console[verb] = (function (method, verb, log) {
-          return function () {
-              method.apply(console, arguments);
-              var msg = document.createElement('p');
-              msg.classList.add(verb);
-              msg.setAttribute("style", "white-space: pre-wrap;")
-              msg.textContent = verb + ': ' + JSON.stringify(arguments, null, 2);
-              log.appendChild(msg);
-          };
-      })(console[verb], verb, log);
-  });
-
-  // render game at designated fps
-  startGame = setInterval(gameLoop, 1000 / fps)
+    // render game at designated fps
+    startGame = setInterval(gameLoop, 1000 / fps)
   </script>
 </body>

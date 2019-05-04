@@ -54,12 +54,13 @@ function toggleSound() {
 const bgm = playSoundEffect('bgm', 'lf-1.mp3', 0.5, true)
 
 async function init() {
+  console.debug('Setting up game...')
   //** Variables and setup **//
   bulletCount = 0
   bulletFired = false
   bulletLocation = null
   bulletShotOrigin = null
-  currentLevel = 0
+  currentLevel = 1
   fps = 60
   frame = 0
   gameOverShape = null
@@ -100,12 +101,13 @@ async function init() {
 
 
 async function transitionLevel() {
+  console.debug(`Starting level ${currentLevel}`)
   if (currentLevel > levels.length) {
     return destroy()
   }
   inTransition = false
   clearInterval(lightInterval);
-  enemies = await levels[currentLevel].loadLevel()
+  enemies = await levels[currentLevel - 1].loadLevel()
 
   enemies = enemies.map((enemy) => {
     return new EnemyShip(
@@ -152,7 +154,7 @@ function destroy() {
 
   gameRunning = false
   inTransition = false
-  console.log("DESTROY YO");
+  console.log("Enemy destroyed");
   gameOverShape = new Shape(
     gameOver,
     new Location(-5, 11),
@@ -171,7 +173,7 @@ function collisionCheck() {
   if (!myShip.alive || enemies.length === 0) {
     gameRunning = false
     currentLevel++
-    if (currentLevel >= levels.length) {
+    if (currentLevel >= levels.length + 1) {
       inTransition = false
       clearInterval(lightInterval);
       return destroy()
@@ -245,10 +247,10 @@ function render() {
       })
     })
   } else if (inTransition) {
-    colorSection('bg-red', 16, 0, currentLevel === 0);
-    colorSection('bg-green', 16, 16, currentLevel === 1);
-    colorSection('bg-purple', 16, 32, currentLevel === 2);
-    colorSection('bg-blue', 16, 48, currentLevel === 3);
+    colorSection('bg-red', 16, 0, currentLevel === 1);
+    colorSection('bg-green', 16, 16, currentLevel === 2);
+    colorSection('bg-purple', 16, 32, currentLevel === 3);
+    colorSection('bg-blue', 16, 48, currentLevel === 4);
   } else {
     // render game over screen defined in destroy function
     for (let i = 0; i < gameOverShape.shapeType.length; i++) {

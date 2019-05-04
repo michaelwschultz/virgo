@@ -1,8 +1,9 @@
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+body {
+  font-size: 14px;
+}
+.container {
+  max-width: 1024px;
+  margin: 0 auto;
 }
 .hidden {
   visibility: hidden;
@@ -23,35 +24,64 @@
 #board-lights {
   pointer-events: none;
 }
+#simulator {
+  height: 100%;
+  min-width: 384px;
+  border: 16px solid  #000E20;
+  background: #000E20;
+}
+.led-size {
+  padding: 3px;
+}
+.led-spacing {
+  margin: 3px;
+}
 ul {
   margin: 0;
   padding: 0;
+  margin-block-start: 0;
+  padding-inline-start: 0;
+  margin-block-end: 0;
+  line-height: 0;
 }
 .selected {
   background: white !important;
 }
 
-/** Switch
- -------------------------------------*/
+button {
+  border-radius: 24px;
+  line-height: 16px;
+  background: #000E20;
+  color: #07336B;
+  border: none;
+  padding: 8px 16px;
+  margin-right: 8px;
+  cursor: pointer;
+  outline: none;
+}
+button:hover {
+  color: white;
+  background: #07336B;
+}
 
+#utilties {
+  width: 416px;
+}
+
+/* Switch */
 .switch input {
   position: absolute;
   opacity: 0;
 }
-
-/**
- * 1. Adjust this to size
- */
-
 .switch {
   display: inline-block;
-  font-size: 20px; /* 1 */
+  font-size: 20px;
   height: 1em;
   width: 2em;
   background: #000E20;
   border-radius: 1em;
+  cursor: pointer;
 }
-
 .switch div {
   height: 1em;
   width: 1em;
@@ -62,10 +92,59 @@ ul {
      -moz-transition: all 300ms;
           transition: all 300ms;
 }
-
 .switch input:checked + div {
   background: #13CC83;
   -webkit-transform: translate3d(100%, 0, 0);
      -moz-transform: translate3d(100%, 0, 0);
           transform: translate3d(100%, 0, 0);
+}
+
+/* Console */
+#console {
+  border: 16px solid #000E20;
+  background: #000E20;
+}
+#log {
+  width: 384px;
+  height: 734px;
+  max-height: 768px;
+  display: flex;
+  flex-direction: column-reverse;
+  color: #07336B;
+  overflow-y: scroll;
+}
+#log p {
+  margin: 8px 0;
+  white-space: pre-wrap;
+}
+#legend .log, #log .log {
+  color: white;
+}
+#legend .log > div, #log .log .badge {
+  background: white;
+} 
+#legend .debug, #log .debug {
+  color: lightseagreen;
+  outline: none;
+}
+#legend .debug > div, #log .debug .badge {
+  background: lightseagreen;
+  outline: none;
+}
+#legend .error, #log .error {
+  color: red;
+}
+#legend .error > div, #log .error .badge {
+  background: red;
+} 
+#legend .warn, #log .warn {
+  color: yellow;
+}
+#legend .warn > div, #log .warn .badge {
+  background: yellow;
+}
+#log .badge {
+  color: #000E20;
+  border-radius: 8px;
+  padding: 0 8px;
 }
