@@ -8,12 +8,12 @@ function getBoard(boardName, ledName, defaultColor = "") {
   }
 
   // place the LED's
-  for (r = 0; r < grid.height; r++) { 
+  for (r = 0; r < grid.height; r++) {
     let currentRow = 'row-' + r
     document.getElementById(boardName).innerHTML += "<ul id='row-" + r + "'></ul>"
 
     for (c = 0; c < grid.width; c++) {
-      document.getElementById(currentRow).innerHTML += "<li id='" + r + "-" + c + "-" + ledName + "' class='dib pa1 ma2 br-100 " + hidden + " " + defaultColor + "'></li>"
+      document.getElementById(currentRow).innerHTML += "<li id='" + r + "-" + c + "-" + ledName + "' class='dib pa1 ma1 br-100 " + hidden + " " + defaultColor + "'></li>"
     }
   }
 }
@@ -31,6 +31,6 @@ function turnOn(location, color) {
 
 // Turn off a single light
 function turnOff(location) {
-  document.getElementById(location.row + "-" + location.column + "-light").className = "dib pa1 ma2 br-100"
+  document.getElementById(location.row + "-" + location.column + "-light").className = "dib pa1 ma1 br-100"
   document.getElementById(location.row + "-" + location.column + "-light").classList.add("hidden")
 }

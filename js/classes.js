@@ -68,12 +68,7 @@ class Bullet {
         // turnOn(bulletStartLocation, this.color)
 
         // move bullet one column to the right
-        bulletStartLocation.column++
-
-        // stop interval once bullet reaches end of grid
-        if (bulletStartLocation.column >= grid.width) {
-          clearInterval(move)
-        }
+        bulletStartLocation.row--
       }.bind(this), this.speed)
     }
   }
@@ -104,13 +99,14 @@ class Location {
 }
 
 class Ship {
-  constructor(shape, name, color, health) {
+  constructor(shape, name, color, health, endCoord = 0) {
     this.bullets = []
     this.health = health
     this.color = color
     this.name = name
     this.shape = shape
     this.invulnerable = false
+    this.endCoord = endCoord
   }
 
   fire() {
@@ -174,6 +170,16 @@ class Ship {
         }
       }
     }
+
+    this.bullets = this.bullets.filter((bullet) => {
+      // stop interval once bullet reaches end of grid
+      if (bullet.location.row < this.endCoord) {
+        bullet.destroy()
+        return false
+      }
+      return true
+    })
+
   }
 }
 
@@ -244,7 +250,10 @@ class UserShip extends Ship {
   moveDown() {
     let shipRow = this.shape.location.row
 
-    if (shipRow < 15) {
+    // todo: remove need for magic number
+    // We should know how big our ship is and
+    // the board should set the boundaries
+    if (shipRow < 60) {
       shipRow = shipRow + 1
       this.shape.location.row = shipRow
     }
@@ -253,7 +262,7 @@ class UserShip extends Ship {
   moveLeft() {
     let shipColumn = this.shape.location.column
 
-    if (shipColumn > 0) {
+    if (shipColumn > 1) {
       shipColumn = shipColumn - 1
       this.shape.location.column = shipColumn
     }
@@ -262,7 +271,7 @@ class UserShip extends Ship {
   moveRight() {
     let shipColumn = this.shape.location.column
 
-    if (shipColumn < 31) {
+    if (shipColumn < 30) {
       shipColumn = shipColumn + 1
       this.shape.location.column = shipColumn
     }
@@ -312,6 +321,6 @@ class Level {
   }
 }
 
-module.exports = {
-  EnemyShip,
-}
+// module.exports = {
+//   EnemyShip,
+// }
