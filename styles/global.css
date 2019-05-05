@@ -1,14 +1,10 @@
 /* Variables */
 :root {
-  --main-color: hotpink;
-  --pane-padding: 5px 42px;
   --primary: #0C3F7F;
   --primary-d: #07336B;
   --primary-xd: #041A36;
   --primary-xxd: #000E20;
-  
 }
-
 body {
   font-size: 14px;
 }
