@@ -8,7 +8,7 @@ Written by [Michael Schultz](http://twitter.com/michaelschultz) with MASSIVE hel
 ![screenshot](https://raw.githubusercontent.com/michaelwschultz/Space-Shooter-LED/master/screenshot.png)
 
 ## Goal of this project
-Build a 2D side-scrolling space shooter using a 16 x 32 [LED display](https://www.adafruit.com/products/420).
+Build a 2D side-scrolling space shooter using a 32 x 64 [LED display](https://www.adafruit.com/product/2279).
 
 This is my first hardware project and my first game. I played around with a Raspberry Pi at work for the first time and was instantly taken by how magical it feels to plug in an LED, writing some code and see it light up.
 
