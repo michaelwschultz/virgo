@@ -59,7 +59,7 @@ button {
   border-radius: 24px;
   line-height: 16px;
   background: #000E20;
-  color: #07336B;
+  color: #0C3F7F;
   border: none;
   padding: 8px 16px;
   margin-right: 8px;
@@ -76,20 +76,18 @@ button:hover, button.active {
 }
 
 /* tab navigation */
-
-#tabNavigation {
-  margin: 0 -16px !important;
-}
-
 #tabs {
   width: 416px;
   height: 800px;
-  border: 16px solid #000E20;
   background: #000E20;
+  border: 16px solid #000E20;
+  color: #0C3F7F;
   margin-bottom: 16px;
 }
-
-#tabs ul {
+#tabNavigation {
+  margin: 0 -16px !important;
+}
+#tabNavigation {
   position: relative;
   display: flex;
   margin: 0 auto;
@@ -98,8 +96,7 @@ button:hover, button.active {
   flex-flow: row wrap;
   justify-content: center;
 }
-
-#tabs li {
+#tabNavigation li {
   position: relative;
   z-index: 1;
   display: block;
@@ -107,8 +104,7 @@ button:hover, button.active {
   text-align: center;
   flex: 1;
 }
-
-#tabs li a {
+#tabNavigation li a {
   position: relative;
   display: block;
   overflow: hidden;
@@ -127,17 +123,16 @@ button:hover, button.active {
   transition: all 0.3s, transform 0.3s;
   transition: all 0.3s, transform 0.3s, -webkit-transform 0.3s;
 }
-#tabs li a:hover {
+#tabNavigation li a:hover {
   opacity: 1;
 }
 
-#tabs li.active a {
+#tabNavigation li.active a {
   opacity: 1;
   color: #FF5C4E;
 }
-
 /* The line */
-#tabs li:last-child::before {
+#tabNavigation li:last-child::before {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -146,10 +141,17 @@ button:hover, button.active {
   background: #FF5C4E;
   content: '';
 }
-
 /* Move the line */
-#tabs li:first-child.active ~ li:last-child::before {
+#tabNavigation li:first-child.active ~ li:last-child::before {
   transform: translate3d(-100%, 0, 0);
+}
+
+#shapesPanel {
+  height: 700px;
+  overflow-y: scroll;
+}
+#shapesPanel > ul > li {
+  padding-bottom: 16px;
 }
 
 /* Switch */

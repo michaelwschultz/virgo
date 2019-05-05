@@ -34,3 +34,21 @@ function turnOff(location) {
   document.getElementById(location.row + "-" + location.column + "-light").className = "dib led-size led-spacing br-100"
   document.getElementById(location.row + "-" + location.column + "-light").classList.add("hidden")
 }
+
+
+function getPreviewBoard(boardName, ledName, defaultColor = "") {
+  let hidden = ""
+  if (ledName == "light") {
+    hidden = "hidden"
+  }
+
+  // place the LED's
+  for (r = 0; r < 16; r++) {
+    let currentRow = boardName + '-row-' + r
+    document.getElementById(boardName).innerHTML += "<ul id='" + boardName + "-row-" + r + "' class='flex'></ul>"
+
+    for (c = 0; c < 32; c++) {
+      document.getElementById(currentRow).innerHTML += "<li id='" + r + "-" + c + "-" + ledName + "' class='dib led-size led-spacing br-100 " + hidden + " " + defaultColor + "'></li>"
+    }
+  }
+}

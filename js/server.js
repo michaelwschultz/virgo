@@ -75,6 +75,18 @@ app.get('/get-shape', (req, res, next) => {
   });
 });
 
+app.get('/get-all-shapes', (req, res, next) => {
+  Shape.findAll({
+    include: [{
+      model: ShapeConfig
+    }]
+  })
+  .then(shapes => {
+    console.log('here are the shapes', shapes)
+    res.send(shapes);
+  });
+});
+
 app.post('/save-shape', (req, res, next) => {
   const {
     name,

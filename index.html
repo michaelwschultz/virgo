@@ -66,8 +66,33 @@
           <div id="log"></div>
         </div>
 
-        <div id="shapesPanel" class="hidden">
-          kljasdlfkajsdk
+        <div id="shapesPanel" class="hide mt3">
+          <ul>
+            <li>
+              <p>Shape-Name</p>
+              <div id="previewBoard1">
+                <!-- inject preview here -->
+              </div>
+            </li>
+            <li>
+              <p>Shape-Name 2</p>
+              <div id="previewBoard2">
+                <!-- inject preview here -->
+              </div>
+            </li>
+            <li>
+              <p>Shape-Name 3</p>
+              <div id="previewBoard3">
+                <!-- inject preview here -->
+              </div>
+            </li>
+            <li>
+              <p>Shape-Name 4</p>
+              <div id="previewBoard4">
+                <!-- inject preview here -->
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
 
@@ -105,5 +130,25 @@
       consolePanel.classList.add("hide")
       shapesPanel.classList.remove("hide")
     });
+
+    // TODO not sure why this isn't working or being executed
+    const allShapes = async () => {
+      const shapes = await fetch('/get-all-shapes', {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+          "Content-Type": "application/json",
+          // "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+
+      return shapes
+    }
+
+    getPreviewBoard('previewBoard1', 'preview', 'led-off')
+    getPreviewBoard('previewBoard2', 'preview', 'led-off')
+    getPreviewBoard('previewBoard3', 'preview', 'led-off')
+    getPreviewBoard('previewBoard4', 'preview', 'led-off')
   </script>
 </body>
