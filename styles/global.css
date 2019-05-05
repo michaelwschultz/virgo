@@ -1,3 +1,14 @@
+/* Variables */
+:root {
+  --main-color: hotpink;
+  --pane-padding: 5px 42px;
+  --primary: #0C3F7F;
+  --primary-d: #07336B;
+  --primary-xd: #041A36;
+  --primary-xxd: #000E20;
+  
+}
+
 body {
   font-size: 14px;
 }
@@ -29,8 +40,8 @@ body {
 }
 #simulator {
   width: 416px;
-  border: 16px solid  #000E20;
-  background: #000E20;
+  border: 16px solid var(--primary-xxd);
+  background: var(--primary-xxd);
   margin-bottom: 16px;
 }
 .led-size {
@@ -40,7 +51,7 @@ body {
   margin: 3px;
 }
 .led-off {
-  background-color: #041A36;
+  background-color: var(--primary-xd);
 }
 ul {
   margin: 0;
@@ -58,8 +69,8 @@ ul {
 button {
   border-radius: 24px;
   line-height: 16px;
-  background: #000E20;
-  color: #0C3F7F;
+  background: var(--primary-xxd);
+  color: var(--primary);
   border: none;
   padding: 8px 16px;
   margin-right: 8px;
@@ -68,7 +79,7 @@ button {
 }
 button:hover, button.active {
   color: white;
-  background: #07336B;
+  background: var(--primary-d);
 }
 
 #utilties {
@@ -79,9 +90,9 @@ button:hover, button.active {
 #tabs {
   width: 416px;
   height: 800px;
-  background: #000E20;
-  border: 16px solid #000E20;
-  color: #0C3F7F;
+  background: var(--primary-xxd);
+  border: 16px solid var(--primary-xxd);
+  color: var(--primary);
   margin-bottom: 16px;
 }
 #tabNavigation {
@@ -129,7 +140,7 @@ button:hover, button.active {
 
 #tabNavigation li.active a {
   opacity: 1;
-  color: #FF5C4E;
+  color: var(--primary);
 }
 /* The line */
 #tabNavigation li:last-child::before {
@@ -138,7 +149,7 @@ button:hover, button.active {
   left: 0;
   width: 100%;
   height: 4px;
-  background: #FF5C4E;
+  background: var(--primary);
   content: '';
 }
 /* Move the line */
@@ -164,7 +175,7 @@ button:hover, button.active {
   font-size: 20px;
   height: 1em;
   width: 2em;
-  background: #000E20;
+  background: var(--primary-xxd);
   border-radius: 1em;
   cursor: pointer;
 }
@@ -172,14 +183,14 @@ button:hover, button.active {
   height: 1em;
   width: 1em;
   border-radius: 1em;
-  background: #FFF;
+  background: white;
   box-shadow: 0 0.1em 0.3em rgba(0,0,0,0.3);
   -webkit-transition: all 300ms;
      -moz-transition: all 300ms;
           transition: all 300ms;
 }
 .switch input:checked + div {
-  background: #13CC83;
+  background: lightseagreen;
   -webkit-transform: translate3d(100%, 0, 0);
      -moz-transform: translate3d(100%, 0, 0);
           transform: translate3d(100%, 0, 0);
@@ -190,7 +201,7 @@ button:hover, button.active {
   height: 700px;
   display: flex;
   flex-direction: column-reverse;
-  color: #07336B;
+  color: var(--primary-d);
   overflow-y: scroll;
 }
 #log p {
@@ -198,7 +209,7 @@ button:hover, button.active {
   white-space: pre-wrap;
 }
 #log .badge {
-  color: #000E20;
+  color: var(--primary-xxd);
   border-radius: 8px;
   padding: 0 8px;
 }
