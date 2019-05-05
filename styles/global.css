@@ -213,6 +213,9 @@ button:hover, button.active {
   border-radius: 8px;
   padding: 0 8px;
 }
+#legend {
+  opacity: .7;
+}
 #legend .log, #log .log {
   color: white;
 }
