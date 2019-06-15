@@ -3,23 +3,105 @@
 <link rel="stylesheet" href="styles/tachyons.min.css">
 <link rel="stylesheet" href="styles/global.css">
 
-<body class="sans-serif pa2 bg-navy" style="height: 100%; line-height: 0;">
-  <div class="wrapper">
-    <div>
-      <div class="flex items-center justify-between ph2">
-        <h1 class="lightest-blue pv4">LED Board Simulator</h1>
-        <p id="soundToggle" class="lightest-blue pv4" style="cursor: pointer" onClick="toggleSound(this)">Sound on</p>
+<body class="sans-serif pa2 bg-navy" style="height: 100%;">
+  <div class="container">
+
+    <div id="header" class="flex items-center justify-between">
+      <h2 class="lightest-blue pv2">LED Board Simulator</h2>
+      <div id="utilties" class="flex items-center justify-between">
+        <div class="flex items-center mt2">
+          <button type="button" id="loadButton">Load Shape</button>
+          <button type="button" id="saveButton">Save Shape</button>
+        </div>
+        <div class="flex items-center">
+          <p class="lightest-blue ph2">Sound</p>
+          <label class="switch">
+            <input type="checkbox" onClick="toggleSound()" />
+            <div></div>
+          </label>
+        </div>
       </div>
-      <div id="board-lights" class="absolute"></div>
-      <div id="board"></div>
-      <div class="flex items-center justify-end mt2 ph2">
-        <button type="button" id="loadButton" class="pa3">Load Shape</button>
-        <button type="button" id="saveButton" class="pa3">Save Shape</button>
+    </div>
+
+    <div class="flex justify-between flex-wrap">
+      <div id="simulator">
+        <div id="board-lights" class="absolute"></div>
+        <div id="board"></div>
       </div>
+
+      <div id="tabs">
+
+        <ul id="tabNavigation">
+          <li id="consoleButton" class="active">
+            <a href="#">
+              Console
+            </a>
+          </li>
+          <li id="shapeButton" class="">
+            <a href="#">
+              Shapes
+            </a>
+          </li>
+        </ul>
+
+        <div id="consolePanel">
+          <div id="legend" class="flex justify-between mv2">
+            <div class="flex items-center log">
+              <div style="width: 8px; height: 8px; border-radius: 8px; margin-right: 4px;"></div>
+              log
+            </div>
+            <div class="flex items-center debug">
+              <div style="width: 8px; height: 8px; border-radius: 8px; margin-right: 4px;"></div>
+              debug
+            </div>
+            <div class="flex items-center warn">
+              <div style="width: 8px; height: 8px; border-radius: 8px; margin-right: 4px;"></div>
+              warn
+            </div>
+            <div class="flex items-center error">
+              <div style="width: 8px; height: 8px; border-radius: 8px; margin-right: 4px;"></div>
+              error
+            </div>
+          </div>
+          <div id="log"></div>
+        </div>
+
+        <div id="shapesPanel" class="hide mt3">
+          <ul>
+            <li>
+              <!-- TODO previewBoard function should build the html -->
+              <p>Shape-Name</p>
+              <div id="previewBoard1">
+                <!-- inject preview here -->
+              </div>
+            </li>
+            <li>
+              <p>Shape-Name 2</p>
+              <div id="previewBoard2">
+                <!-- inject preview here -->
+              </div>
+            </li>
+            <li>
+              <p>Shape-Name 3</p>
+              <div id="previewBoard3">
+                <!-- inject preview here -->
+              </div>
+            </li>
+            <li>
+              <p>Shape-Name 4</p>
+              <div id="previewBoard4">
+                <!-- inject preview here -->
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <!-- Imports -->
+  <script src="js/console.js"></script>
   <script src="js/simulator.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/classes.js"></script>
@@ -28,7 +110,47 @@
   <script src="js/engine.js"></script>
 
   <script>
-  // render game at designated fps
-  startGame = setInterval(gameLoop, 1000 / fps)
+    // render game at designated fps
+    startGame = setInterval(gameLoop, 1000 / fps)
+
+    const consoleButton = document.getElementById("consoleButton")
+    const shapeButton = document.getElementById("shapeButton")
+    const consolePanel = document.getElementById("consolePanel")
+    const shapesPanel = document.getElementById("shapesPanel")
+
+    consoleButton.addEventListener("click", function() {
+      shapeButton.classList.remove("active")
+      consoleButton.classList.add("active")
+      shapesPanel.classList.add("hide")
+      consolePanel.classList.remove("hide")
+    });
+
+    shapeButton.addEventListener("click", function() {
+      shapeButton.classList.add("active")
+      consoleButton.classList.remove("active")
+      consolePanel.classList.add("hide")
+      shapesPanel.classList.remove("hide")
+    });
+
+    // TODO not sure why this isn't working or being executed
+    const allShapes = async () => {
+      const shapes = await fetch('/get-all-shapes', {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+          "Content-Type": "application/json",
+          // "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+
+      return shapes
+    }
+
+    // TODO this loop over all the shapes
+    getPreviewBoard('previewBoard1', 'preview', 'led-off')
+    getPreviewBoard('previewBoard2', 'preview', 'led-off')
+    getPreviewBoard('previewBoard3', 'preview', 'led-off')
+    getPreviewBoard('previewBoard4', 'preview', 'led-off')
   </script>
 </body>

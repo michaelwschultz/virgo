@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3001
+const port = 3000
 const Sequelize = require('sequelize');
 
 const bodyParser = require('body-parser');
@@ -72,6 +72,18 @@ app.get('/get-shape', (req, res, next) => {
     const shapeJSON = JSON.stringify(shape, null, 2);
     console.log(shapeJSON)
     res.send(shapeJSON);
+  });
+});
+
+app.get('/get-all-shapes', (req, res, next) => {
+  Shape.findAll({
+    include: [{
+      model: ShapeConfig
+    }]
+  })
+  .then(shapes => {
+    console.log('here are the shapes', shapes)
+    res.send(shapes);
   });
 });
 

@@ -2,23 +2,28 @@ let bulletCount
 let bulletFired
 let bulletLocation
 let bulletShotOrigin
+let currentLevel
 let displayedWelcomeScreen
 let enemies
 let fps
 let frame
 let gameOverShape
 let gameRunning
+let inTransition
+let levelLightOn
+let levels
+let lightInterval
 let myShip
 let shapesOnScreen
 let ship1
 let ship2
 let shipColor
 
-const grid = {height: 16, width: 32}
-const ledColor = 'bg-dark-blue'
+const grid = {height: 64, width: 32}
+const ledColor = 'led-off'
 
 // render simulator
-getBoard('board', 'slot', 'bg-dark-blue')
+getBoard('board', 'slot', ledColor)
 getBoard('board-lights', 'light')
 
 
@@ -29,21 +34,17 @@ let newShape = new Selectables({
   key: 'altKey'
 })
 
-// set sound to off
+// mute sound by default
 let soundMuted = true
-
-// TODO this doesn't quite work right
-// comment this function call to unmute sound
-// toggleSound()
 function toggleSound() {
   soundMuted = !soundMuted
 
-  if (soundMuted) {
-    bgm.pause()
+  if (!soundMuted) {
+    bgm.play()
     document.getElementById('soundToggle').style.color = 'red'
     document.getElementById('soundToggle').innerHTML = 'Sound off'
   } else {
-    bgm.play()
+    bgm.pause()
     document.getElementById('soundToggle').style.color = '#cdecff'
     document.getElementById('soundToggle').innerHTML = 'Sound on'
   }
@@ -53,48 +54,21 @@ function toggleSound() {
 const bgm = playSoundEffect('bgm', 'lf-1.mp3', 0.5, true)
 
 async function init() {
+  console.debug('Setting up game...')
   //** Variables and setup **//
   bulletCount = 0
   bulletFired = false
   bulletLocation = null
   bulletShotOrigin = null
+  currentLevel = 1
   fps = 60
   frame = 0
   gameOverShape = null
   gameRunning = false
+  inTransition = true
+  levelLightOn = true
   shapesOnScreen = {}
   shipColor = ""
-
-  const level = new Level([
-    'shape-name-test',
-    'shape-square',
-  ])
-
-  enemies = await level.loadLevel()
-
-  enemies = enemies.map((enemy) => {
-    return new EnemyShip(
-      new Shape(
-        enemy.shape_configs,
-        new Location(0, 31),
-        new MovementPattern(
-          // [pattern1, pattern2, pattern1],
-          [patternScroll],
-          { type: 'repeat', number: 3 }, 30
-        )
-      ), enemy.name, enemy.shape_configs[0].color, 4
-    )
-  })
-
-  // setup game objects
-  myShip = new UserShip(
-    new Shape(
-      userShip,
-      new Location(6, 0)
-    ), 'my ship', 'bg-yellow', 4, document
-  )
-
-  enemies[0].shape.moveShape()
 
   let loadButton = document.getElementById('loadButton')
 
@@ -102,10 +76,69 @@ async function init() {
     const shape = await newShape.loadShapeObject()
     shapesOnScreen[shape.name] = shape
   })
+
+  levels = [
+    new Level([
+      'crescent',
+    ]),
+    new Level([
+      'x-wing',
+    ]),
+    new Level([
+      'x-fighter',
+    ]),
+    // new Level([
+    //   'pyramid',
+    // ]),
+    new Level([
+      'boss',
+    ]),
+  ]
+
+  console.debug('Starting level 1')
+  setTimeout(async () => await transitionLevel(), 5000)
+  lightInterval = setInterval(() => levelLightOn = !levelLightOn, 500)
+}
+
+
+async function transitionLevel() {
+  if (currentLevel > levels.length) {
+    return destroy()
+  }
+  inTransition = false
+  clearInterval(lightInterval);
+  enemies = await levels[currentLevel - 1].loadLevel()
+
+  enemies = enemies.map((enemy) => {
+    return new EnemyShip(
+      new Shape(
+        enemy.shape_configs,
+        new Location(0, 13),
+        new MovementPattern(
+          // [pattern1, pattern2, pattern1],
+          [patternScroll],
+          { type: 'repeat', number: 3 }, 30
+        )
+      ), enemy.name, enemy.shape_configs[0].color, 4, 64
+    )
+  })
+
+  // setup game objects
+  myShip = new UserShip(
+    new Shape(
+      userShip,
+      new Location(60, 15)
+    ), 'my ship', 'bg-yellow', 4, document
+  )
+
+  enemies[0].shape.moveShape()
+
   gameRunning = true
 }
 
 function destroy() {
+  console.log("Game Over")
+
   bulletShotOrigin = null
   bulletLocation = null
   bulletFired = null
@@ -116,13 +149,13 @@ function destroy() {
   shapesOnScreen = null
 
   // setup game objects
-  myShip.destroy()
   myShip = null
   ship1 = null
   ship2 = null
   enemies = null
 
   gameRunning = false
+  inTransition = false
 
   gameOverShape = new Shape(
     gameOver,
@@ -140,8 +173,18 @@ function destroy() {
 function collisionCheck() {
 
   if (!myShip.alive || enemies.length === 0) {
-    destroy()
-    setTimeout(function () { init() }, 3000)
+    gameRunning = false;
+    currentLevel++;
+    if (currentLevel >= levels.length + 1) {
+      inTransition = false
+      clearInterval(lightInterval);
+      return destroy()
+    } else {
+      console.debug(`Starting level ${currentLevel}`);
+      inTransition = true
+      lightInterval = setInterval(() => levelLightOn = !levelLightOn, 500);
+      setTimeout(async function () { await transitionLevel() }, 5000);
+    }
   }
 
   myShip.collisionCheck(enemies)
@@ -206,6 +249,11 @@ function render() {
         )
       })
     })
+  } else if (inTransition) {
+    colorSection('bg-red', 16, 0, currentLevel === 1);
+    colorSection('bg-green', 16, 16, currentLevel === 2);
+    colorSection('bg-purple', 16, 32, currentLevel === 3);
+    colorSection('bg-blue', 16, 48, currentLevel === 4);
   } else {
     // render game over screen defined in destroy function
     for (let i = 0; i < gameOverShape.shapeType.length; i++) {
@@ -220,8 +268,21 @@ function render() {
   }
 }
 
+function colorSection(color, numRows, startingRow, isBlinking) {
+  for (let i = startingRow; i < startingRow + numRows; i++) {
+    for (let j = 0; j < grid.width; j++) {
+      if (!isBlinking || levelLightOn) {
+        turnOn(
+          new Location(i, j),
+          color,
+        );
+      }
+    }
+  }
+}
+
 function gameLoop() {
-  if (gameRunning) {
+  if (gameRunning && !inTransition) {
     collisionCheck()
   }
   render()

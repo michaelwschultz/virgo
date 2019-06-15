@@ -1,23 +1,23 @@
 /*
- *   Selectables  
- *   
+ *   Selectables
+ *
  *   v1.4.1
- *       
+ *
  *   https://github.com/p34eu/Selectables.git
  */
 
 function Selectables(opts) {
     'use strict';
     var defaults = {
-        zone: "#wrapper", // ID of the element whith selectables.        
-        elements: "a", // items to be selectable .list-group, #id > .class,'htmlelement' - valid querySelectorAll        
-        selectedClass: 'active', // class name to apply to seleted items      
-        key: false, //'altKey,ctrlKey,metaKey,false  // activate using optional key     
+        zone: "#wrapper", // ID of the element whith selectables.
+        elements: "a", // items to be selectable .list-group, #id > .class,'htmlelement' - valid querySelectorAll
+        selectedClass: 'active', // class name to apply to seleted items
+        key: false, //'altKey,ctrlKey,metaKey,false  // activate using optional key
         moreUsing: 'shiftKey', //altKey,ctrlKey,metaKey   // add more to selection
-        enabled: true, //false to .enable() at later time       
+        enabled: true, //false to .enable() at later time
         start: null, //  event on selection start
         stop: null, // event on selection end
-        onSelect: null, // event fired on every item when selected.               
+        onSelect: null, // event fired on every item when selected.
         onDeselect: null // event fired on every item when selected.
     };
     let selected = [];
@@ -33,17 +33,17 @@ function Selectables(opts) {
         if (shapeName === null) {
             return;
         }
-        console.log("shapeName: ", shapeName);
+
         const shape = await fetch(`/get-shape?name=${shapeName}`, {
             method: "GET", // *GET, POST, PUT, DELETE, etc.
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit   
+            credentials: "same-origin", // include, *same-origin, omit
             headers: {
                 "Content-Type": "application/json",
                 // "Content-Type": "application/x-www-form-urlencoded",
             },
         });
-        
+
         return shape.json().then(data => data[0]);
     }
 
@@ -53,15 +53,21 @@ function Selectables(opts) {
             return;
         }
 
+        console.log(selected);
+        const firstCoord = selected[0].split('-');
+        const relativeRow = parseInt(firstCoord[0]);
+        const relativeCol = parseInt(firstCoord[1]);
+
         const config = selected.map(slot => {
             slot = slot.split('-');
-            return {row: slot[0], column: slot[1], color: 'bg-orange'};
+            console.log({ row: slot[0] - relativeRow, column: slot[1] - relativeCol, color: 'bg-orange' });
+            return {row: slot[0] - relativeRow, column: slot[1] - relativeCol, color: 'bg-orange'};
         });
 
         fetch('/save-shape', {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit   
+            credentials: "same-origin", // include, *same-origin, omit
             headers: {
                 "Content-Type": "application/json",
                 // "Content-Type": "application/x-www-form-urlencoded",

@@ -1,13 +1,24 @@
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+/* Variables */
+:root {
+  --primary: #0C3F7F;
+  --primary-d: #07336B;
+  --primary-xd: #041A36;
+  --primary-xxd: #000E20;
+}
+body {
+  font-size: 14px;
+}
+.container {
+  max-width: 1024px;
+  margin: 0 auto;
 }
 .hidden {
   visibility: hidden;
 }
-.s-noselect { 
+.hide {
+  display: none;
+}
+.s-noselect {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -15,18 +26,215 @@
   -ms-user-select: none;
   user-select: none;
 }
-#s-rectBox { 
+#s-rectBox {
   position: absolute;
   z-index: 1090;
-  border: 2px dashed #cbd3e3; 
+  border: 2px dashed #cbd3e3;
 }
 #board-lights {
   pointer-events: none;
 }
+#simulator {
+  width: 416px;
+  border: 16px solid var(--primary-xxd);
+  background: var(--primary-xxd);
+  margin-bottom: 16px;
+}
+.led-size {
+  padding: 3px;
+}
+.led-spacing {
+  margin: 3px;
+}
+.led-off {
+  background-color: var(--primary-xd);
+}
 ul {
   margin: 0;
   padding: 0;
+  margin-block-start: 0;
+  padding-inline-start: 0;
+  margin-block-end: 0;
+  line-height: 0;
+  list-style: none;
 }
 .selected {
   background: white !important;
+}
+
+button {
+  border-radius: 24px;
+  line-height: 16px;
+  background: var(--primary-xxd);
+  color: var(--primary);
+  border: none;
+  padding: 8px 16px;
+  margin-right: 8px;
+  cursor: pointer;
+  outline: none;
+}
+button:hover, button.active {
+  color: white;
+  background: var(--primary-d);
+}
+
+#utilties {
+  width: 416px;
+}
+
+/* tab navigation */
+#tabs {
+  width: 416px;
+  height: 800px;
+  background: var(--primary-xxd);
+  border: 16px solid var(--primary-xxd);
+  color: var(--primary);
+  margin-bottom: 16px;
+}
+#tabNavigation {
+  margin: 0 -16px !important;
+}
+#tabNavigation {
+  position: relative;
+  display: flex;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+#tabNavigation li {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+#tabNavigation li a {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 2.5;
+  padding: 1em 0;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+  color: #9EACB8;
+  line-height: 1;
+  transition: all 0.3s, -webkit-transform 0.3s;
+  transition: all 0.3s, transform 0.3s;
+  transition: all 0.3s, transform 0.3s, -webkit-transform 0.3s;
+}
+#tabNavigation li a:hover {
+  opacity: 1;
+}
+
+#tabNavigation li.active a {
+  opacity: 1;
+  color: var(--primary);
+}
+/* The line */
+#tabNavigation li:last-child::before {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--primary);
+  content: '';
+}
+/* Move the line */
+#tabNavigation li:first-child.active ~ li:last-child::before {
+  transform: translate3d(-100%, 0, 0);
+}
+
+#shapesPanel {
+  height: 700px;
+  overflow-y: scroll;
+}
+#shapesPanel > ul > li {
+  padding-bottom: 16px;
+}
+
+/* Switch */
+.switch input {
+  position: absolute;
+  opacity: 0;
+}
+.switch {
+  display: inline-block;
+  font-size: 20px;
+  height: 1em;
+  width: 2em;
+  background: var(--primary-xxd);
+  border-radius: 1em;
+  cursor: pointer;
+}
+.switch div {
+  height: 1em;
+  width: 1em;
+  border-radius: 1em;
+  background: white;
+  box-shadow: 0 0.1em 0.3em rgba(0,0,0,0.3);
+  -webkit-transition: all 300ms;
+     -moz-transition: all 300ms;
+          transition: all 300ms;
+}
+.switch input:checked + div {
+  background: lightseagreen;
+  -webkit-transform: translate3d(100%, 0, 0);
+     -moz-transform: translate3d(100%, 0, 0);
+          transform: translate3d(100%, 0, 0);
+}
+
+/* Console */
+#log {
+  height: 700px;
+  display: flex;
+  flex-direction: column-reverse;
+  color: var(--primary-d);
+  overflow-y: scroll;
+}
+#log p {
+  margin: 8px 0;
+  white-space: pre-wrap;
+}
+#log .badge {
+  color: var(--primary-xxd);
+  border-radius: 8px;
+  padding: 0 8px;
+}
+#legend {
+  opacity: .7;
+}
+#legend .log, #log .log {
+  color: white;
+}
+#legend .log > div, #log .log .badge {
+  background: white;
+} 
+#legend .debug, #log .debug {
+  color: lightseagreen;
+  outline: none;
+}
+#legend .debug > div, #log .debug .badge {
+  background: lightseagreen;
+  outline: none;
+}
+#legend .error, #log .error {
+  color: red;
+}
+#legend .error > div, #log .error .badge {
+  background: red;
+} 
+#legend .warn, #log .warn {
+  color: yellow;
+}
+#legend .warn > div, #log .warn .badge {
+  background: yellow;
 }
