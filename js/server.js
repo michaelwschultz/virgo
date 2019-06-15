@@ -22,9 +22,6 @@ const sequelize = new Sequelize('spaceshooterdb', 'root', null, {
 
   // SQLite only
   storage: './spaceshooterdb',
-
-  // http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
-  operatorsAliases: false
 });
 
 const Shape = sequelize.define('shapes', {
