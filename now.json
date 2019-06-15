@@ -1,3 +1,6 @@
 {
-  "alias": "virgogame.now.sh"
+  "version": 2,
+  "project": "virgo",
+  "scope": "michaelschultz",
+  "alias": ["virgo.michaelschultz.now.sh"]
 }
