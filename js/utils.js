@@ -1,5 +1,5 @@
 function playSoundEffect(type, name, volume = 1, loop = false) {
-  let audio = new Audio('../sounds/' + type + '/' + name)
+  let audio = new Audio('../static/sounds/' + type + '/' + name)
   audio.volume = volume
   audio.loop = loop
   if (!soundMuted) {

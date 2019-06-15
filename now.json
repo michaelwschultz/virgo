@@ -2,5 +2,11 @@
   "version": 2,
   "project": "virgo",
   "scope": "michaelschultz",
-  "alias": ["virgo.michaelschultz.now.sh"]
+  "alias": ["virgo.michaelschultz.now.sh"],
+  "builds": [
+    {
+      "src": "./static",
+      "use": "@now/static"
+    }
+  ]
 }

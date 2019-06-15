@@ -9,7 +9,7 @@ const Model = Sequelize.Model;
 
 app.use(bodyParser.json());
 
-const sequelize = new Sequelize('spaceshooterdb', 'root', null, {
+const sequelize = new Sequelize('database', 'root', null, {
   host: 'localhost',
   dialect: 'sqlite',
 
@@ -21,7 +21,7 @@ const sequelize = new Sequelize('spaceshooterdb', 'root', null, {
   },
 
   // SQLite only
-  storage: './spaceshooterdb',
+  storage: './static/database',
 });
 
 const Shape = sequelize.define('shapes', {

@@ -2,21 +2,21 @@
   "development": {
     "username": "root",
     "password": null,
-    "database": "spaceshooterdb",
+    "database": "database",
     "host": "localhost",
     "dialect": "sqlite"
   },
   "test": {
     "username": "root",
     "password": null,
-    "database": "spaceshooterdb",
+    "database": "database",
     "host": "localhost",
     "dialect": "sqlite"
   },
   "production": {
     "username": "root",
     "password": null,
-    "database": "spaceshooterdb",
+    "database": "database",
     "host": "localhost",
     "dialect": "sqlite"
   }
