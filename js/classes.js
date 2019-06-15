@@ -321,6 +321,6 @@ class Level {
   }
 }
 
-// module.exports = {
-//   EnemyShip,
-// }
+module.exports = {
+  EnemyShip,
+}
