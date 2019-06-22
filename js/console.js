@@ -13,7 +13,7 @@ let count = 1;
         log.firstElementChild.innerHTML = `${previousEntry} <span class="badge">${count}</span>`;
         return;
       }
-      
+
       count = 1;
       var msg = document.createElement('p');
       msg.classList.add(verb);
@@ -23,7 +23,7 @@ let count = 1;
         msg.textContent = arguments[0];
         previousEntry = arguments[0];
       }
-      
+
       log.insertBefore(msg, log.childNodes[0]);
     };
   })(console[verb], verb, log);

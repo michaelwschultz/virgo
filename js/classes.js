@@ -1,7 +1,9 @@
 //** Classes **//
 
+import { SoundEffect } from './SoundEffect';
+
 // shape reqires an array of objects that include location.row, .column and color
-class Shape {
+export class Shape {
   constructor(shapeType, location, movementPattern) {
     this.shapeType = shapeType
     this.location = location
@@ -53,8 +55,9 @@ class Shape {
   }
 }
 
-class Bullet {
-  constructor(location, color, speed) {
+export class Bullet {
+  constructor(grid, location, color, speed) {
+    this.grid = grid
     this.location = location
     this.color = color
     this.speed = speed
@@ -63,7 +66,7 @@ class Bullet {
   }
 
   moveBullet(bulletStartLocation) {
-    if (bulletStartLocation.column < grid.width) {
+    if (bulletStartLocation.column < this.grid.width) {
       let move = setInterval(function() {
         // turnOn(bulletStartLocation, this.color)
 
@@ -78,7 +81,7 @@ class Bullet {
   }
 }
 
-class MovementPattern {
+export class MovementPattern {
   constructor(movementGroup, movementType = {type: "loop"}, movementSpeed = 30) {
     this.movementType = movementType
     this.movementSpeed = movementSpeed
@@ -91,15 +94,16 @@ class MovementPattern {
   }
 }
 
-class Location {
+export class Location {
   constructor(row, column) {
     this.row = row
     this.column = column
   }
 }
 
-class Ship {
-  constructor(shape, name, color, health, endCoord = 0) {
+export class Ship {
+  constructor(grid, shape, name, color, health, endCoord = 0) {
+    this.grid = grid
     this.bullets = []
     this.health = health
     this.color = color
@@ -111,10 +115,10 @@ class Ship {
 
   fire() {
     // make sure ship has room to fire
-    if (this.shape.location.column < grid.width) {
-      this.bullets.push(new Bullet(new Location(this.shape.location.row, this.shape.location.column), "bg-red", 20))
+    if (this.shape.location.column < this.grid.width) {
+      this.bullets.push(new Bullet(this.grid, new Location(this.shape.location.row, this.shape.location.column), "bg-red", 20))
       console.log('Fired bullet')
-      playSoundEffect('lasers', '3.wav', 0.5)
+      new SoundEffect('lasers', '3.wav', 0.5).play()
     }
   }
 
@@ -183,9 +187,9 @@ class Ship {
   }
 }
 
-class UserShip extends Ship {
-  constructor(shape, name, color, health, document, invulnerable) {
-    super(shape, name, color, health, invulnerable)
+export class UserShip extends Ship {
+  constructor(grid, shape, name, color, health, document, invulnerable) {
+    super(grid, shape, name, color, health, invulnerable)
     this.document = document
     this.alive = true
 
@@ -226,11 +230,11 @@ class UserShip extends Ship {
     console.warn('Player health: ' + this.health)
     if (this.health <= 0) {
         this.alive = false
-        playSoundEffect('explosions', '5.wav')
+        new SoundEffect('explosions', '5.wav').play()
         console.warn('Player is dead')
     }
     this.color = 'bg-purple'
-    const hit = playSoundEffect('lasers', '3.wav', 0.5, true)
+    const hit = new SoundEffect('lasers', '3.wav', 0.5, true).play()
     this.invulnerablility(2000)
       .then(() => {
         this.color = 'bg-yellow'
@@ -278,16 +282,16 @@ class UserShip extends Ship {
   }
 }
 
-class EnemyShip extends Ship {
-  constructor(shape, name, color, health) {
-    super(shape, name, color, health)
+export class EnemyShip extends Ship {
+  constructor(grid, shape, name, color, health) {
+    super(grid, shape, name, color, health)
     this.alive = true
   }
 
   destroy() {
     // do something here
     this.alive = false
-    playSoundEffect('explosions', '1.wav', 0.5)
+    new SoundEffect('explosions', '1.wav', 0.5).play()
   }
 
   reactToCollision(collidedWithPlayer = false) {
@@ -299,14 +303,14 @@ class EnemyShip extends Ship {
   }
 }
 
-class Level {
+export class Level {
   constructor(enemyNames) {
     this.enemyNames = enemyNames
   }
 
   async loadLevel() {
     return Promise.all(this.enemyNames.map(async (name) => {
-      const shape = await fetch(`/get-shape?name=${name}`, {
+      const shape = await fetch(`${process.env.API_URL}/get-shape?name=${name}`, {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
         credentials: "same-origin", // include, *same-origin, omit
@@ -321,6 +325,3 @@ class Level {
   }
 }
 
-module.exports = {
-  EnemyShip,
-}

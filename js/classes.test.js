@@ -1,44 +1,49 @@
-const { EnemyShip } = require('./classes')
+import { EnemyShip } from './classes';
+
+import { SoundEffect } from './SoundEffect';
 // const faker = require('faker-js')
- 
+
+const mockPlay = jest.fn();
+jest.mock('./SoundEffect', () => {
+  return {
+    SoundEffect: jest.fn().mockImplementation(() => {
+      return { play: mockPlay };
+    })
+  }
+});
+
 describe('EnemyShip', () => {
-  const originalSoundEffect = global.playSoundEffect
-
-  beforeAll(() => {
-    global.playSoundEffect = jest.fn()
+  afterEach(() => {
+    SoundEffect.mockClear();
   })
 
-  afterAll(() => {
-    global.playSoundEffect = originalSoundEffect
-  })
-  
   it('should die', () => {
     const enemy = new EnemyShip()
 
     expect(enemy.alive).toBe(true)
     enemy.destroy()
     expect(enemy.alive).toBe(false)
-    expect(global.playSoundEffect).toHaveBeenCalledWith(
-      'explosions', 
-      '1.wav', 
+    expect(SoundEffect).toHaveBeenCalledWith(
+      'explosions',
+      '1.wav',
       0.5,
     )
+    expect(mockPlay).toHaveBeenCalled();
   })
 
   it('should not die if still have health', () => {
     const mockHealth = 20
-    const enemy = new EnemyShip(null, 'mock-enemy', '', mockHealth)
-    console.log("HEALTH TO START: ", mockHealth);
+    const enemy = new EnemyShip(null, null, 'mock-enemy', '', mockHealth)
+
     expect(enemy.health).toBe(mockHealth)
     enemy.reactToCollision()
     expect(enemy.health).toBe(mockHealth - 1)
-    console.log("HEALTH AFTER GETTING HIT: ", mockHealth);
     expect(enemy.alive).toBe(true)
   })
 
   it('should die if at 0 health', () => {
     const mockHealth = 1
-    const enemy = new EnemyShip(null, 'mock-enemy', '', mockHealth)
+    const enemy = new EnemyShip(null, null, 'mock-enemy', '', mockHealth)
 
     expect(enemy.health).toBe(mockHealth)
     enemy.reactToCollision()

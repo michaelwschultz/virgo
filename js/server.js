@@ -1,12 +1,13 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 3001
 const Sequelize = require('sequelize');
+const { spawn } = require('child_process')
 
 const bodyParser = require('body-parser');
+
 const Op = Sequelize.Op;
 const Model = Sequelize.Model;
-
 app.use(bodyParser.json());
 
 const sequelize = new Sequelize('spaceshooterdb', 'root', null, {
@@ -54,6 +55,14 @@ const ShapeConfig = sequelize.define('shape_configs', {
 
 Shape.hasMany(ShapeConfig, { foreignKey: 'shape_id', sourceKey: 'id' });
 
+app.use('/', (req, res, next) => {
+  res.set({
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, HEAD',
+    'Access-Control-Allow-Headers': 'content-type'
+  })
+  next()
+})
 app.get('/get-shape', (req, res, next) => {
   const { name } = req.query;
   console.log(name);
@@ -110,4 +119,13 @@ app.post('/save-shape', (req, res, next) => {
 
 app.use('/', express.static('.'));
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => {
+  const opts = {
+    env: process.env,
+    cwd: process.cwd(),
+    stdio: ['inherit', process.stdout, process.stdout]
+  }
+  // Run parcel
+  spawn('parcel', ['./index.html', '-p', 3000], opts)
+  console.log(`Virgo API listening on port ${port}!`)
+})

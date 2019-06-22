@@ -4,7 +4,7 @@
 /*
         •
 */
-const userShip = [
+export const userShip = [
   { row: 0, column: 0, color: "bg-yellow" },
   { row: 1, column: 0, color: "bg-yellow" },
   { row: 2, column: 0, color: "bg-yellow" },
@@ -19,7 +19,7 @@ const userShip = [
          •••
         •••
 */
-const shapeSmallEnemy = [
+export const shapeSmallEnemy = [
   {row: 0, column: 0, color: "bg-orange"},
   {row: 0, column: 1, color: "bg-orange"},
   {row: 0, column: 2, color: "bg-orange"},
@@ -37,7 +37,7 @@ const shapeSmallEnemy = [
         ••
          •••
 */
-const shapeLargeEnemy = [
+export const shapeLargeEnemy = [
   {row: 0, column: 1, color: "bg-green"},
   {row: 0, column: 2, color: "bg-green"},
   {row: 0, column: 3, color: "bg-green"},
@@ -50,7 +50,7 @@ const shapeLargeEnemy = [
   {row: 3, column: 3, color: "bg-green"}
 ]
 
-const gameOver = [
+export const gameOver = [
   {row: 0, column: 0, color: "bg-green"},
   {row: 0, column: 1, color: "bg-green"},
   {row: 0, column: 2, color: "bg-green"},
@@ -85,25 +85,25 @@ const gameOver = [
 ]
 
 /* Patterns */
-const patternStatic = [
+export const patternStatic = [
   {row: 0, column: 0}
 ]
-const patternDropDown = [
+export const patternDropDown = [
   {row: 10, column: 0}
 ]
-const pattern1 = [
+export const pattern1 = [
   {row: 0, column: -10},
   {row: -5, column: 0},
   {row: 0, column: 10},
   {row: 5, column: 0}
 ]
-const pattern2 = [
+export const pattern2 = [
   {row: 4, column: 3},
   {row: -4, column: 0},
   {row: 6, column: 2},
   {row: -3, column: 6}
 ]
 
-const patternScroll = [
+export const patternScroll = [
   { row: 1, column: 0 },
 ]

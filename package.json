@@ -4,20 +4,26 @@
   "description": "Side-scrolling Space Shooter built on NodeJS and Raspberry Pi",
   "main": "index.js",
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "body-parser": "^1.18.3",
+    "child_process": "^1.0.2",
     "express": "^4.16.4",
     "nodemon": "^1.18.10",
+    "parcel-bundler": "^1.12.3",
     "sequelize": "^5.8.9",
     "sequelize-cli": "^5.4.0",
     "sqlite3": "^4.0.9"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "babel-jest": "^24.8.0",
     "faker-js": "^1.0.0",
     "jest": "^24.7.1"
   },
   "scripts": {
-    "start": "nodemon ./js/server.js",
-    "test": "jest --config ./config/jest.config.js"
+    "start": "nodemon --watch ./js/server.js ./js/server.js ",
+    "test": "jest --config ./jest.config.js"
   },
   "repository": {
     "type": "git",
