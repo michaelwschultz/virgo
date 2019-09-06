@@ -17,7 +17,8 @@
   },
   "scripts": {
     "start": "nodemon ./js/server.js",
-    "test": "jest --config ./config/jest.config.js"
+    "test": "jest --config ./config/jest.config.js",
+    "build": "--output public"
   },
   "repository": {
     "type": "git",
