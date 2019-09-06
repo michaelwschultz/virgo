@@ -10,7 +10,7 @@ const Model = Sequelize.Model;
 app.use(bodyParser.json());
 
 const sequelize = new Sequelize('database', 'root', null, {
-  host: 'localhost',
+  host: 'https://virgogamedata.herokuapp.com',
   dialect: 'sqlite',
 
   pool: {
@@ -21,7 +21,7 @@ const sequelize = new Sequelize('database', 'root', null, {
   },
 
   // SQLite only
-  storage: './static/database',
+  storage: 'https://virgogamedata.herokuapp.com',
 });
 
 const Shape = sequelize.define('shapes', {
