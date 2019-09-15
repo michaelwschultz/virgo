@@ -27,10 +27,10 @@ This is my first hardware project and my first game. I played around with a Rasp
 After browsing around [Adafruit.com](http://adafruit.com) looking at all the different parts that were available, I quickly made up my mind to build a game; something I'd wanted to do for a long time. This was the perfect opportunity due to the fact that it would help me continue my learning of Javascript and teach me something new.
 
 ## Parts List
--[LED display](https://www.adafruit.com/product/2279)
--[LED power supply](https://www.adafruit.com/product/1466)
--[LED power converter](https://www.adafruit.com/product/368)
--[Raspberry Pi 4](https://www.amazon.com/Vilros-Raspberry-Fan-Cooled-Heatsinks-Quickstart/dp/B07TKFFCF1/ref=sr_1_4?keywords=raspberry+pi+4+2gb&qid=1568521833&sr=8-4)
+- [LED display](https://www.adafruit.com/product/2279)
+- [LED power supply](https://www.adafruit.com/product/1466)
+- [LED power converter](https://www.adafruit.com/product/368)
+- [Raspberry Pi 4](https://www.amazon.com/Vilros-Raspberry-Fan-Cooled-Heatsinks-Quickstart/dp/B07TKFFCF1/ref=sr_1_4?keywords=raspberry+pi+4+2gb&qid=1568521833&sr=8-4)
 
 ## Design
 Designs are also a work in progress but we have a [Figma file](https://www.figma.com/file/ZdafTZipsZgCy0pVW7ywhoDz/LED-screen?node-id=0%3A1) that you're welcome to take a look at.
