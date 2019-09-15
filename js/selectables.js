@@ -6,7 +6,7 @@
  *   https://github.com/p34eu/Selectables.git
  */
 
-function Selectables(opts) {
+export function Selectables(opts) {
     'use strict';
     var defaults = {
         zone: "#wrapper", // ID of the element whith selectables.
@@ -34,7 +34,7 @@ function Selectables(opts) {
             return;
         }
 
-        const shape = await fetch(`/get-shape?name=${shapeName}`, {
+        const shape = await fetch(`${process.env.API_URL}/get-shape?name=${shapeName}`, {
             method: "GET", // *GET, POST, PUT, DELETE, etc.
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
@@ -64,7 +64,7 @@ function Selectables(opts) {
             return {row: slot[0] - relativeRow, column: slot[1] - relativeCol, color: 'bg-orange'};
         });
 
-        fetch('/save-shape', {
+        fetch('${process.env.API_URL}/save-shape', {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit

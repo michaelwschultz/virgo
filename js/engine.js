@@ -1,3 +1,28 @@
+import { getBoard, turnOn,  turnOff } from './simulator';
+import {
+  Bullet,
+  MovementPattern,
+  Location,
+  Shape,
+  Ship,
+  UserShip,
+  EnemyShip,
+  Level,
+} from './classes';
+import { SoundEffect} from './SoundEffect';
+import  {
+  userShip,
+  shapeSmallEnemy,
+  shapeLargeEnemy,
+  gameOver,
+  patternStatic,
+  patternDropDown,
+  pattern1,
+  pattern2,
+  patternScroll,
+} from './shapes';
+
+import { Selectables } from './selectables';
 let bulletCount
 let bulletFired
 let bulletLocation
@@ -23,9 +48,8 @@ const grid = {height: 64, width: 32}
 const ledColor = 'led-off'
 
 // render simulator
-getBoard('board', 'slot', ledColor)
-getBoard('board-lights', 'light')
-
+getBoard(grid, 'board', 'slot', ledColor)
+getBoard(grid, 'board-lights', 'light')
 
 let newShape = new Selectables({
   zone: '#board',
@@ -34,26 +58,13 @@ let newShape = new Selectables({
   key: 'altKey'
 })
 
-// mute sound by default
-let soundMuted = true
-function toggleSound() {
-  soundMuted = !soundMuted
-
-  if (!soundMuted) {
-    bgm.play()
-    document.getElementById('soundToggle').style.color = 'red'
-    document.getElementById('soundToggle').innerHTML = 'Sound off'
-  } else {
-    bgm.pause()
-    document.getElementById('soundToggle').style.color = '#cdecff'
-    document.getElementById('soundToggle').innerHTML = 'Sound on'
-  }
+// start bgm
+const bgm = new SoundEffect('bgm', 'lf-1.mp3', 0.5, true)
+export function toggleSound() {
+  bgm.toggle()
 }
 
-// start bgm
-const bgm = playSoundEffect('bgm', 'lf-1.mp3', 0.5, true)
-
-async function init() {
+export async function init() {
   console.debug('Setting up game...')
   //** Variables and setup **//
   bulletCount = 0
@@ -73,8 +84,8 @@ async function init() {
   let loadButton = document.getElementById('loadButton')
 
   loadButton.addEventListener('click', async function () {
-    const shape = await newShape.loadShapeObject()
-    shapesOnScreen[shape.name] = shape
+    // const shape = await newShape.loadShapeObject()
+    // shapesOnScreen[shape.name] = shape
   })
 
   levels = [
@@ -98,6 +109,8 @@ async function init() {
   console.debug('Starting level 1')
   setTimeout(async () => await transitionLevel(), 5000)
   lightInterval = setInterval(() => levelLightOn = !levelLightOn, 500)
+
+  setInterval(gameLoop, 1000 / fps)
 }
 
 
@@ -111,6 +124,7 @@ async function transitionLevel() {
 
   enemies = enemies.map((enemy) => {
     return new EnemyShip(
+      grid,
       new Shape(
         enemy.shape_configs,
         new Location(0, 13),
@@ -125,6 +139,7 @@ async function transitionLevel() {
 
   // setup game objects
   myShip = new UserShip(
+    grid,
     new Shape(
       userShip,
       new Location(60, 15)
@@ -215,6 +230,7 @@ function render() {
   if (gameRunning) {
     for (let i = 0; i < myShip.shape.shapeType.length; i++) {
       turnOn(
+        grid,
         new Location(
           myShip.shape.shapeType[i].row + myShip.shape.location.row,
           myShip.shape.shapeType[i].column + myShip.shape.location.column
@@ -224,12 +240,13 @@ function render() {
     }
 
     for (let b = 0; b < myShip.bullets.length; b++) {
-      turnOn(myShip.bullets[b].location, "bg-red")
+      turnOn(grid, myShip.bullets[b].location, "bg-red")
     }
 
     // show enemies on screen
     for (let i = 0; i < enemies[0].shape.shapeType.length; i++) {
       turnOn(
+        grid,
         new Location(
           enemies[0].shape.shapeType[i].row + enemies[0].shape.location.row,
           enemies[0].shape.shapeType[i].column + enemies[0].shape.location.column
@@ -241,6 +258,7 @@ function render() {
     Object.entries(shapesOnScreen).forEach(([shapeName, shape]) => {
       shape.shape_configs.forEach(config => {
         turnOn(
+          grid,
           new Location(
             config.row + 0,
             config.column + 0
@@ -258,6 +276,7 @@ function render() {
     // render game over screen defined in destroy function
     for (let i = 0; i < gameOverShape.shapeType.length; i++) {
       turnOn(
+        grid,
         new Location(
           gameOverShape.shapeType[i].row + gameOverShape.location.row,
           gameOverShape.shapeType[i].column + gameOverShape.location.column
@@ -273,6 +292,7 @@ function colorSection(color, numRows, startingRow, isBlinking) {
     for (let j = 0; j < grid.width; j++) {
       if (!isBlinking || levelLightOn) {
         turnOn(
+          grid,
           new Location(i, j),
           color,
         );
@@ -281,11 +301,9 @@ function colorSection(color, numRows, startingRow, isBlinking) {
   }
 }
 
-function gameLoop() {
+export function gameLoop() {
   if (gameRunning && !inTransition) {
     collisionCheck()
   }
   render()
 }
-
-init()

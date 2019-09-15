@@ -1,25 +1,25 @@
 //** LED Board **//
 
 // Build 16 rows with 32 divs
-function getBoard(boardName, ledName, defaultColor = "") {
+export function getBoard(grid, boardName, ledName, defaultColor = "") {
   let hidden = ""
   if (ledName == "light") {
     hidden = "hidden"
   }
 
   // place the LED's
-  for (r = 0; r < grid.height; r++) {
+  for (let r = 0; r < grid.height; r++) {
     let currentRow = 'row-' + r
     document.getElementById(boardName).innerHTML += "<ul id='row-" + r + "'></ul>"
 
-    for (c = 0; c < grid.width; c++) {
+    for (let c = 0; c < grid.width; c++) {
       document.getElementById(currentRow).innerHTML += "<li id='" + r + "-" + c + "-" + ledName + "' class='dib led-size led-spacing br-100 " + hidden + " " + defaultColor + "'></li>"
     }
   }
 }
 
 // Turn on a single light
-function turnOn(location, color) {
+export function turnOn(grid, location, color) {
   // Dont turn on the light if it isn't on the grid
   if (location.column >= grid.width || location.column < 0 || location.row >= grid.height || location.row < 0) {
     return
@@ -30,24 +30,24 @@ function turnOn(location, color) {
 }
 
 // Turn off a single light
-function turnOff(location) {
+export function turnOff(location) {
   document.getElementById(location.row + "-" + location.column + "-light").className = "dib led-size led-spacing br-100"
   document.getElementById(location.row + "-" + location.column + "-light").classList.add("hidden")
 }
 
 
-function getPreviewBoard(boardName, ledName, defaultColor = "") {
+export function getPreviewBoard(boardName, ledName, defaultColor = "") {
   let hidden = ""
   if (ledName == "light") {
     hidden = "hidden"
   }
 
   // place the LED's
-  for (r = 0; r < 16; r++) {
+  for (let  r = 0; r < 16; r++) {
     let currentRow = boardName + '-row-' + r
     document.getElementById(boardName).innerHTML += "<ul id='" + boardName + "-row-" + r + "' class='flex'></ul>"
 
-    for (c = 0; c < 32; c++) {
+    for (let c = 0; c < 32; c++) {
       document.getElementById(currentRow).innerHTML += "<li id='" + r + "-" + c + "-" + ledName + "' class='dib led-size led-spacing br-100 " + hidden + " " + defaultColor + "'></li>"
     }
   }
