@@ -82,14 +82,19 @@ app.get('/get-shape', (req, res, next) => {
 });
 
 app.get('/get-all-shapes', (req, res, next) => {
+  console.log('trying to get all shapes');
   Shape.findAll({
     include: [{
       model: ShapeConfig
     }]
   })
   .then(shapes => {
-    console.log('here are the shapes', shapes)
-    res.send(shapes);
+    const shapesJSON = {shapes: []}
+    shapes.map(shape => {
+      shapesJSON["shapes"].push(shape);
+    })
+    console.log('here are the shapes', JSON.stringify(shapesJSON, null, 2))
+    res.send(shapesJSON);
   });
 });
 

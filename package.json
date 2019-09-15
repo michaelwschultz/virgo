@@ -23,6 +23,7 @@
   },
   "scripts": {
     "build": "parcel build ./js/client.js",
+    "dev": "yarn build; yarn start",
     "start": "nodemon --watch ./js/server.js ./js/server.js ",
     "test": "jest --config ./jest.config.js"
   },

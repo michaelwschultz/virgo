@@ -15,6 +15,7 @@ import  {
   shapeSmallEnemy,
   shapeLargeEnemy,
   gameOver,
+  letterA,
   patternStatic,
   patternDropDown,
   pattern1,
@@ -98,9 +99,12 @@ export async function init() {
     new Level([
       'x-fighter',
     ]),
-    // new Level([
-    //   'pyramid',
-    // ]),
+    new Level([
+      'pyramid',
+    ]),
+    new Level([
+      'crescent',
+    ]),
     new Level([
       'boss',
     ]),
@@ -268,10 +272,12 @@ function render() {
       })
     })
   } else if (inTransition) {
-    colorSection('bg-red', 16, 0, currentLevel === 1);
-    colorSection('bg-green', 16, 16, currentLevel === 2);
-    colorSection('bg-purple', 16, 32, currentLevel === 3);
-    colorSection('bg-blue', 16, 48, currentLevel === 4);
+    colorSection('bg-light-yellow', 10, 49, currentLevel === 1);
+    colorSection('bg-light-red', 10, 39,  currentLevel === 2);
+    colorSection('bg-light-blue', 10, 29, currentLevel === 3); 
+    colorSection('bg-light-purple', 10, 19, currentLevel === 4);
+    colorSection('bg-light-green', 10, 9, currentLevel === 5);
+    colorSection('bg-red', 10, 0, currentLevel === 6);
   } else {
     // render game over screen defined in destroy function
     for (let i = 0; i < gameOverShape.shapeType.length; i++) {

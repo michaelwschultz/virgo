@@ -22,13 +22,17 @@ export function Selectables(opts) {
     };
     let selected = [];
     let saveButton = document.getElementById('saveButton');
+    let loadButton = document.getElementById('loadButton');
 
     saveButton.addEventListener('click', function() {
         buildShapeObject(selected);
     });
 
-    // TODO: get-shape fetch doesn't work yet
-    this.loadShapeObject = async function() {
+    loadButton.addEventListener('click', function() {
+        loadShapeObject(selected);
+    });
+
+    async function loadShapeObject() {
         const shapeName = prompt("Which shape do you want to load?", "shape-name");
         if (shapeName === null) {
             return;
@@ -64,7 +68,7 @@ export function Selectables(opts) {
             return {row: slot[0] - relativeRow, column: slot[1] - relativeCol, color: 'bg-orange'};
         });
 
-        fetch('${process.env.API_URL}/save-shape', {
+        fetch(`${process.env.API_URL}/save-shape`, {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit

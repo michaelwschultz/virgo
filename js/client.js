@@ -1,5 +1,5 @@
 import 'babel-polyfill'
-import { init, gameLoop, toggleSound } from './engine';
+import { init, toggleSound } from './engine';
 import { getPreviewBoard } from './simulator';
 require('./console');
 
@@ -30,7 +30,7 @@ shapeButton.addEventListener("click", function () {
 
 // TODO not sure why this isn't working or being executed
 const allShapes = async () => {
-  const shapes = await fetch('/get-all-shapes', {
+  const shapes = await fetch(`${process.env.API_URL}/get-all-shapes`, {
     method: "GET", // *GET, POST, PUT, DELETE, etc.
     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
     credentials: "same-origin", // include, *same-origin, omit
@@ -40,11 +40,17 @@ const allShapes = async () => {
     },
   });
 
-  return shapes
+  console.log('all shapes', shapes)
+
+  return shapes.json().then(data => data[0])
 }
 
+allShapes()
+const previewGrid = {height: 16, width: 32};
+const firstShape = allShapes[0];
+
 // TODO this loop over all the shapes
-getPreviewBoard('previewBoard1', 'preview', 'led-off')
+getPreviewBoard('previewBoard1', 'preview', 'led-off', firstShape)
 getPreviewBoard('previewBoard2', 'preview', 'led-off')
 getPreviewBoard('previewBoard3', 'preview', 'led-off')
 getPreviewBoard('previewBoard4', 'preview', 'led-off')

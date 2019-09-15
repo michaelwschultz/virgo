@@ -116,7 +116,7 @@ export class Ship {
   fire() {
     // make sure ship has room to fire
     if (this.shape.location.column < this.grid.width) {
-      this.bullets.push(new Bullet(this.grid, new Location(this.shape.location.row, this.shape.location.column), "bg-red", 20))
+      this.bullets.push(new Bullet(this.grid, new Location(this.shape.location.row, this.shape.location.column + 2), "bg-red", 20))
       console.log('Fired bullet')
       new SoundEffect('lasers', '3.wav', 0.5).play()
     }
