@@ -1,5 +1,5 @@
 # Space Shooter for Raspberry Pi and LED display
-[![CircleCI](https://circleci.com/gh/michaelwschultz/space-shooter-led.svg?style=svg)](https://circleci.com/gh/michaelwschultz/space-shooter-led)
+![CircleCI](https://circleci.com/gh/michaelwschultz/virgo.svg?style=svg)
 
 Created by [Michael Schultz](http://twitter.com/michaelschultz) and [Marc Mendiola](http://twitter.com/codemookie).
 
