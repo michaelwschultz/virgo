@@ -1,15 +1,13 @@
 import { EnemyShip } from './classes';
 
-import { SoundEffect } from './SoundEffect';
+import SoundEffect from './soundeffect';
 // const faker = require('faker-js')
 
 const mockPlay = jest.fn();
-jest.mock('./SoundEffect', () => {
-  return {
-    SoundEffect: jest.fn().mockImplementation(() => {
-      return { play: mockPlay };
-    })
-  }
+jest.mock('./soundeffect', () => {
+  return jest.fn().mockImplementation(() => {
+    return { play: mockPlay };
+  });
 });
 
 describe('EnemyShip', () => {

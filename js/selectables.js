@@ -6,11 +6,7 @@
  *   https://github.com/p34eu/Selectables.git
  */
 
-import { turnOn } from './simulator';
-import { grid, clearBoard } from './engine';
-import { Location } from './classes';
-
-export function Selectables(opts) {
+export default function Selectables(opts) {
     'use strict';
     var defaults = {
         zone: "#wrapper", // ID of the element whith selectables.
@@ -42,8 +38,6 @@ export function Selectables(opts) {
             return;
         }
 
-        clearBoard();
-
         const shape = await fetch(`${process.env.API_URL}/get-shape?name=${shapeName}`, {
             method: "GET", // *GET, POST, PUT, DELETE, etc.
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -53,19 +47,7 @@ export function Selectables(opts) {
                 // "Content-Type": "application/x-www-form-urlencoded",
             },
         });
-
-        const shapeConfig = await shape.json().then(data => data.shape_configs);
-
-        for (let i = 0; i < shapeConfig.length; i++) {
-            turnOn(
-                grid,
-                new Location(
-                    shapeConfig[i].row,
-                    shapeConfig[i].column
-                ),
-                shapeConfig[0].color || 'bg-red'
-            )
-        }
+        return shape.json().then(data => data[0]);
     }
 
     function buildShapeObject(selected) {

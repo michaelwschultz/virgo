@@ -1,6 +1,6 @@
 //** Classes **//
-
-import { SoundEffect } from './SoundEffect';
+import _  from 'lodash';
+import SoundEffect from './soundeffect';
 import { sleep } from './utils';
 
 // shape reqires an array of objects that include location.row, .column and color
@@ -136,8 +136,8 @@ export class Ship {
 
   isOffScreen() {
     for (let k = 0; k < this.shape.shapeType.length; k++) {
-      let myColumn = this.shape.shapeType[k].column + this.shape.location.column
-      if (myColumn >= 0) return false
+      let myRow = this.shape.shapeType[k].row + this.shape.location.row
+      if (myRow <= this.grid.height) return false
     }
 
     return true
@@ -194,12 +194,13 @@ export class UserShip extends Ship {
     super(grid, shape, name, color, health, invulnerable)
     this.document = document
     this.alive = true
+    const debouncedFire = _.debounce(() => this.fire(), 10);
 
     // keyboard controls
     this.document.onkeydown = function(e) {
       switch (e.keyCode) {
         case 32: // spacebar
-          this.fire()
+          debouncedFire();
           break
         case 38: // up
           this.moveUp()
@@ -236,7 +237,8 @@ export class UserShip extends Ship {
         console.warn('Player is dead')
     }
     this.color = 'bg-purple'
-    const hit = new SoundEffect('lasers', '3.wav', 0.5, true).play()
+    const hit = new SoundEffect('lasers', '3.wav', 0.5, true);
+    hit.play()
     this.invulnerablility(2000)
       .then(() => {
         this.color = 'bg-yellow'
