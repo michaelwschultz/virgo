@@ -40,17 +40,16 @@ const allShapes = async () => {
     },
   });
 
-  console.log('all shapes', shapes)
+  // console.log('all shapes', await shapes.json())
 
-  return shapes.json().then(data => data[0])
+  return shapes.json();
 }
 
-allShapes()
-const previewGrid = {height: 16, width: 32};
-const firstShape = allShapes[0];
+// allShapes();
+
 
 // TODO this loop over all the shapes
-getPreviewBoard('previewBoard1', 'preview', 'led-off', firstShape)
+getPreviewBoard('previewBoard1', 'preview', 'led-off')
 getPreviewBoard('previewBoard2', 'preview', 'led-off')
 getPreviewBoard('previewBoard3', 'preview', 'led-off')
 getPreviewBoard('previewBoard4', 'preview', 'led-off')

@@ -6,6 +6,10 @@
  *   https://github.com/p34eu/Selectables.git
  */
 
+import { turnOn } from './simulator';
+import { grid, clearBoard } from './engine';
+import { Location } from './classes';
+
 export function Selectables(opts) {
     'use strict';
     var defaults = {
@@ -29,7 +33,7 @@ export function Selectables(opts) {
     });
 
     loadButton.addEventListener('click', function() {
-        loadShapeObject(selected);
+        loadShapeObject();
     });
 
     async function loadShapeObject() {
@@ -37,6 +41,8 @@ export function Selectables(opts) {
         if (shapeName === null) {
             return;
         }
+
+        clearBoard();
 
         const shape = await fetch(`${process.env.API_URL}/get-shape?name=${shapeName}`, {
             method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -48,7 +54,18 @@ export function Selectables(opts) {
             },
         });
 
-        return shape.json().then(data => data[0]);
+        const shapeConfig = await shape.json().then(data => data.shape_configs);
+
+        for (let i = 0; i < shapeConfig.length; i++) {
+            turnOn(
+                grid,
+                new Location(
+                    shapeConfig[i].row,
+                    shapeConfig[i].column
+                ),
+                shapeConfig[0].color || 'bg-red'
+            )
+        }
     }
 
     function buildShapeObject(selected) {
@@ -57,15 +74,26 @@ export function Selectables(opts) {
             return;
         }
 
-        console.log(selected);
-        const firstCoord = selected[0].split('-');
-        const relativeRow = parseInt(firstCoord[0]);
-        const relativeCol = parseInt(firstCoord[1]);
+        // figure out smallest row/column to base shape from
+        const rows = [];
+        const columns = [];
+        selected.map(slot => {
+            const entry = slot.split('-');
+            const row = parseInt(entry[0]);
+            const column = parseInt(entry[1]);
+            rows.push(row);
+            columns.push(column);
+        })
+        const relativeRow = Math.min(...rows);
+        const relativeCol =  Math.min(...columns);
 
-        const config = selected.map(slot => {
-            slot = slot.split('-');
-            console.log({ row: slot[0] - relativeRow, column: slot[1] - relativeCol, color: 'bg-orange' });
-            return {row: slot[0] - relativeRow, column: slot[1] - relativeCol, color: 'bg-orange'};
+        // build up shape using relative positioning
+        const shapeConfig = [];
+        selected.map(slot => {
+            const entry = slot.split('-');
+            const row = parseInt(entry[0]);
+            const column = parseInt(entry[1]);
+            shapeConfig.push({"row": row - relativeRow, "column": column - relativeCol, "color": 'bg-white'});
         });
 
         fetch(`${process.env.API_URL}/save-shape`, {
@@ -78,7 +106,7 @@ export function Selectables(opts) {
             },
             body: JSON.stringify({
                 name: shapeName,
-                config
+                config: shapeConfig,
             }), // body data type must match "Content-Type" header
         });
     };

@@ -6,7 +6,7 @@ setTimeout(function() {
     clearInterval(go);
 }, 1000);
 
-turn on light based on fps between 1 (every frame) and 30 (once every 30 frames or once a second)
+// turn on light based on fps between 1 (every frame) and 30 (once every 30 frames or once a second)
 if (frame % 2 === 0) {
     turnOn(new Location("d", 15), "bg-yellow");
 } else {
