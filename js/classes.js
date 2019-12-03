@@ -1,6 +1,7 @@
 //** Classes **//
 
 import { SoundEffect } from './SoundEffect';
+import { sleep } from './utils';
 
 // shape reqires an array of objects that include location.row, .column and color
 export class Shape {
@@ -116,7 +117,7 @@ export class Ship {
   fire() {
     // make sure ship has room to fire
     if (this.shape.location.column < this.grid.width) {
-      this.bullets.push(new Bullet(this.grid, new Location(this.shape.location.row, this.shape.location.column), "bg-red", 20))
+      this.bullets.push(new Bullet(this.grid, new Location(this.shape.location.row, this.shape.location.column + 2), "bg-red", 20))
       console.log('Fired bullet')
       new SoundEffect('lasers', '3.wav', 0.5).play()
     }
@@ -125,6 +126,7 @@ export class Ship {
   invulnerablility(time) {
     this.invulnerable = true
     this.color = 'bg-pink'
+
     return sleep(time)
       .then(() => {
         this.invulnerable = false
@@ -320,7 +322,7 @@ export class Level {
         },
       })
 
-      return shape.json().then(data => data[0])
+      return shape.json();
     }))
   }
 }

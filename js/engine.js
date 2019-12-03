@@ -1,4 +1,4 @@
-import { getBoard, turnOn,  turnOff } from './simulator';
+import { getBoard, turnOn, turnOff } from './simulator';
 import {
   Bullet,
   MovementPattern,
@@ -9,12 +9,13 @@ import {
   EnemyShip,
   Level,
 } from './classes';
-import { SoundEffect} from './SoundEffect';
-import  {
+import { SoundEffect } from './SoundEffect';
+import {
   userShip,
   shapeSmallEnemy,
   shapeLargeEnemy,
   gameOver,
+  letterA,
   patternStatic,
   patternDropDown,
   pattern1,
@@ -44,7 +45,7 @@ let ship1
 let ship2
 let shipColor
 
-const grid = {height: 64, width: 32}
+export const grid = { height: 64, width: 32 }
 const ledColor = 'led-off'
 
 // render simulator
@@ -98,9 +99,12 @@ export async function init() {
     new Level([
       'x-fighter',
     ]),
-    // new Level([
-    //   'pyramid',
-    // ]),
+    new Level([
+      'pyramid',
+    ]),
+    new Level([
+      'crescent',
+    ]),
     new Level([
       'boss',
     ]),
@@ -110,9 +114,8 @@ export async function init() {
   setTimeout(async () => await transitionLevel(), 5000)
   lightInterval = setInterval(() => levelLightOn = !levelLightOn, 500)
 
-  setInterval(gameLoop, 1000 / fps)
+  setInterval(gameLoop, 1000 / fps);
 }
-
 
 async function transitionLevel() {
   if (currentLevel > levels.length) {
@@ -133,7 +136,7 @@ async function transitionLevel() {
           [patternScroll],
           { type: 'repeat', number: 3 }, 30
         )
-      ), enemy.name, enemy.shape_configs[0].color, 4, 64
+      ), enemy.name, enemy.shape_configs[0].color, 4
     )
   })
 
@@ -176,7 +179,7 @@ function destroy() {
     gameOver,
     new Location(-5, 11),
     new MovementPattern([patternDropDown],
-      {type: "repeat", number: 1},
+      { type: "repeat", number: 1 },
       50
     ),
     "game over"
@@ -204,27 +207,49 @@ function collisionCheck() {
 
   myShip.collisionCheck(enemies)
 
-  enemies[0].collisionCheck([myShip])
+  if (enemies && enemies[0]) {
+    enemies[0].collisionCheck([myShip])
+  }
 
-  if (!enemies[0].alive) {
+  if (enemies[0] && !enemies[0].alive) {
     enemies.splice(0, 1)
     if (enemies.length > 0) {
       enemies[0].shape.moveShape()
     }
   }
 
-  if (enemies[0].isOffScreen()) enemies[0].destroy();
+  if (enemies[0] && enemies[0].isOffScreen()) {
+    enemies[0].destroy();
+  }
 }
 
-// render
-function render() {
-  // cleanup all unused lights
+function colorSection(color, numRows, startingRow, isBlinking) {
+  for (let i = startingRow; i < startingRow + numRows; i++) {
+    for (let j = 0; j < grid.width; j++) {
+      if (!isBlinking || levelLightOn) {
+        turnOn(
+          grid,
+          new Location(i, j),
+          color,
+        );
+      }
+    }
+  }
+}
+
+export function clearBoard() {
   for (let r = 0; r < grid.height; r++) {
     for (let c = 0; c < grid.width; c++) {
       let led = (new Location(r, c))
       turnOff(led)
     }
   }
+}
+
+// render
+function render() {
+  // cleanup all unused lights
+  clearBoard();
 
   // turn on lights in the simulator
   if (gameRunning) {
@@ -268,10 +293,12 @@ function render() {
       })
     })
   } else if (inTransition) {
-    colorSection('bg-red', 16, 0, currentLevel === 1);
-    colorSection('bg-green', 16, 16, currentLevel === 2);
-    colorSection('bg-purple', 16, 32, currentLevel === 3);
-    colorSection('bg-blue', 16, 48, currentLevel === 4);
+    colorSection('bg-light-yellow', 10, 49, currentLevel === 1);
+    colorSection('bg-light-red', 10, 39, currentLevel === 2);
+    colorSection('bg-light-blue', 10, 29, currentLevel === 3);
+    colorSection('bg-light-purple', 10, 19, currentLevel === 4);
+    colorSection('bg-light-green', 10, 9, currentLevel === 5);
+    colorSection('bg-red', 10, 0, currentLevel === 6);
   } else {
     // render game over screen defined in destroy function
     for (let i = 0; i < gameOverShape.shapeType.length; i++) {
@@ -283,20 +310,6 @@ function render() {
         ),
         gameOverShape.shapeType[i].color
       )
-    }
-  }
-}
-
-function colorSection(color, numRows, startingRow, isBlinking) {
-  for (let i = startingRow; i < startingRow + numRows; i++) {
-    for (let j = 0; j < grid.width; j++) {
-      if (!isBlinking || levelLightOn) {
-        turnOn(
-          grid,
-          new Location(i, j),
-          color,
-        );
-      }
     }
   }
 }

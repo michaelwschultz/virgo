@@ -63,10 +63,10 @@ app.use('/', (req, res, next) => {
   })
   next()
 })
+
 app.get('/get-shape', (req, res, next) => {
   const { name } = req.query;
-  console.log(name);
-  Shape.findAll({
+  Shape.findOne({
     where: {
       name,
     },
@@ -76,20 +76,24 @@ app.get('/get-shape', (req, res, next) => {
   })
   .then(shape => {
     const shapeJSON = JSON.stringify(shape, null, 2);
-    console.log(shapeJSON)
     res.send(shapeJSON);
   });
 });
 
 app.get('/get-all-shapes', (req, res, next) => {
+  console.log('trying to get all shapes');
   Shape.findAll({
     include: [{
       model: ShapeConfig
     }]
   })
   .then(shapes => {
-    console.log('here are the shapes', shapes)
-    res.send(shapes);
+    const shapesJSON = [];
+    shapes.map(shape => {
+      shapesJSON.push(JSON.stringify(shape, null, 2));
+    })
+
+    res.send(shapesJSON);
   });
 });
 
@@ -104,17 +108,18 @@ app.post('/save-shape', (req, res, next) => {
       name,
     }))
     .then(shape => {
+      const shapeJSON = JSON.stringify(shape, null, 2);
       config.forEach((config) => {
         ShapeConfig.create({
           shape_id: shape.id,
-          color: config.color,
+          color: config.color || "bg-white",
           row: config.row,
           column: config.column,
         })
       });
+      console.log('saved shape',  JSON.stringify(shapeJSON));
+      res.sendStatus(200);
     });
-
-    res.send('Hey');
 });
 
 app.use('/', express.static('.'));
