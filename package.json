@@ -22,7 +22,7 @@
     "jest": "^24.7.1"
   },
   "scripts": {
-    "build": "parcel build ./js/client.js",
+    "build": "parcel build ./js/client.js --out-dir public",
     "dev": "yarn build; yarn start",
     "start": "nodemon --watch ./js/server.js ./js/server.js ",
     "test": "jest --config ./jest.config.js"
