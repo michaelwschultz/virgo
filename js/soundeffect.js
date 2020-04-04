@@ -1,6 +1,6 @@
-export class SoundEffect {
+export default class SoundEffect {
   constructor(type, name, volume = 1, loop = false) {
-    this.audio = new Audio('${process.env.API_URL}/sounds/' + type + '/' + name)
+    this.audio = new Audio('./sounds/' + type + '/' + name)
     this.audio.volume = volume
     this.audio.loop = loop
     this.type = type
