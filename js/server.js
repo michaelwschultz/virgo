@@ -3,6 +3,8 @@ const app = express()
 const port = 3001
 const Sequelize = require('sequelize');
 const { spawn } = require('child_process')
+const fs = require('fs')
+const _ = require('lodash');
 
 const bodyParser = require('body-parser');
 
@@ -103,22 +105,26 @@ app.post('/save-shape', (req, res, next) => {
     config,
   } = req.body;
 
-  sequelize.sync()
-    .then(() => Shape.create({
-      name,
-    }))
-    .then(shape => {
-      const shapeJSON = JSON.stringify(shape, null, 2);
-      config.forEach((config) => {
-        ShapeConfig.create({
-          shape_id: shape.id,
-          color: config.color || "bg-white",
-          row: config.row,
-          column: config.column,
-        })
-      });
-      console.log('saved shape',  JSON.stringify(shapeJSON));
-      res.sendStatus(200);
+  const sanitizedName = name.replace(/-/g, " ").split(/[\s]/).map((word, idx) => {
+    if (idx > 0) {
+      return _.startCase(_.toLower(word.trim()));
+    }
+    return word
+  }).join('');
+
+  // TODO: Add file overwrite logic
+  const shapeFile = `${__dirname}/shapes/${sanitizedName}.js`;
+  const data = `export const ${sanitizedName} = ${JSON.stringify(config, null, 2)};`;
+  const shapeExists = fs.existsSync(shapeFile);
+  return fs.promises.writeFile(shapeFile, data)
+    .then(() => {
+      if (!shapeExists) {
+        const indexData = `\nexport { ${sanitizedName} } from './${sanitizedName}.js';`
+        return fs.promises.appendFile(`${__dirname}/shapes/index.js`, indexData);
+      }
+    })
+    .catch(err => {
+      return res.sendStatus(500, `error saving ${sanitizedName}: ${err}`)
     });
 });
 
