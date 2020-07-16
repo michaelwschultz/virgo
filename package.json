@@ -9,7 +9,7 @@
     "child_process": "^1.0.2",
     "classnames": "^2.2.6",
     "express": "^4.16.4",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "nodemon": "^1.18.10",
     "parcel-bundler": "^1.12.3",
     "react": "^16.9.0",
