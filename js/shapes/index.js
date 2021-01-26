@@ -37,7 +37,7 @@ export {
 
 export {
   crown,
-  gameOVer,
+  gameOver,
 } from './props.js';
 
 export {
